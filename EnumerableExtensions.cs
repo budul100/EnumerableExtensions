@@ -104,6 +104,21 @@ namespace Extensions
             }
         }
 
+        public static T ElementAtOrFirst<T>
+            (this IEnumerable<T> items, int index)
+        {
+            var result = default(T);
+
+            if (items?.Any() ?? false)
+            {
+                result = items.Count() == 1
+                    ? items.ElementAt(0)
+                    : items.ElementAt(index);
+            }
+
+            return result;
+        }
+
         public static bool EqualsOrDefault<T>
             (this IEnumerable<T> x, IEnumerable<T> y)
         {
@@ -117,14 +132,6 @@ namespace Extensions
             return items
                 .Select(property)
                 .FirstOrDefault(s => !s.IsDefault());
-        }
-
-        public static T GetElementAt<T>
-            (this IEnumerable<T> items, int index)
-        {
-            return items?.Any() ?? false
-                ? items.ElementAt(index)
-                : default;
         }
 
         public static IEnumerable<T> GetIfAny<T>
@@ -141,11 +148,9 @@ namespace Extensions
 
         public static IEnumerable<IEnumerable<T>> GroupByHash<T, TProperty>
             (this IEnumerable<T> source, params Func<T, TProperty>[] properties)
-            where TProperty : class
         {
-            return source
-                .GroupBy(s => properties.Select(p => p(s)).GetSequenceHash())
-                .ToArray();
+            return source.ToArray()
+                .GroupBy(s => properties.Select(p => p(s)).GetSequenceHash()).ToArray();
         }
 
         public static IEnumerable<TResult> Pairwise<TSource, TResult>
