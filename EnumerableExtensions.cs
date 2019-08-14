@@ -134,8 +134,15 @@ namespace Extensions
                 .FirstOrDefault(s => !s.IsDefault());
         }
 
-        public static IEnumerable<T> GetIfAny<T>
-            (this IEnumerable<T> sequence)
+        public static IEnumerable<IEnumerable<T>> GroupByHash<T, TProperty>
+            (this IEnumerable<T> source, params Func<T, TProperty>[] properties)
+        {
+            return source.ToArray()
+                .GroupBy(s => properties.Select(p => p(s)).GetSequenceHash()).ToArray();
+        }
+
+        public static IEnumerable<T> IfAny<T>
+            (IEnumerable<T> sequence)
         {
             if (sequence?.Any() ?? false)
             {
@@ -144,13 +151,6 @@ namespace Extensions
                     yield return s;
                 }
             }
-        }
-
-        public static IEnumerable<IEnumerable<T>> GroupByHash<T, TProperty>
-            (this IEnumerable<T> source, params Func<T, TProperty>[] properties)
-        {
-            return source.ToArray()
-                .GroupBy(s => properties.Select(p => p(s)).GetSequenceHash()).ToArray();
         }
 
         public static IEnumerable<TResult> Pairwise<TSource, TResult>
