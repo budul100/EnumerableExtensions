@@ -142,7 +142,7 @@ namespace Extensions
         }
 
         public static IEnumerable<T> IfAny<T>
-            (IEnumerable<T> sequence)
+            (this IEnumerable<T> sequence)
         {
             if (sequence?.Any() ?? false)
             {
@@ -154,16 +154,16 @@ namespace Extensions
         }
 
         public static IEnumerable<TResult> Pairwise<TSource, TResult>
-            (this IEnumerable<TSource> source, Func<TSource, TSource, TResult> resultSelector)
+            (this IEnumerable<TSource> source, Func<TSource, TSource, TResult> pairs)
         {
             if (source == null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
 
-            if (resultSelector == null)
+            if (pairs == null)
             {
-                throw new ArgumentNullException(nameof(resultSelector));
+                throw new ArgumentNullException(nameof(pairs));
             }
 
             if (source.Any())
@@ -178,7 +178,10 @@ namespace Extensions
                     var previous = e.Current;
                     while (e.MoveNext())
                     {
-                        yield return resultSelector(previous, e.Current);
+                        yield return pairs(
+                            arg1: previous, 
+                            arg2: e.Current);
+
                         previous = e.Current;
                     }
                 }
@@ -278,7 +281,7 @@ namespace Extensions
                     ? property(item)
                     : default;
 
-                if (result.Count > 0
+                if (result.Any()
                     && current.IsEqual(last))
                 {
                     yield return result;
@@ -289,7 +292,7 @@ namespace Extensions
                 last = current;
             }
 
-            if (result.Count > 0)
+            if (result.Any())
             {
                 yield return result;
             }
