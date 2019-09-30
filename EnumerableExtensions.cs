@@ -179,7 +179,7 @@ namespace Extensions
                     while (e.MoveNext())
                     {
                         yield return pairs(
-                            arg1: previous, 
+                            arg1: previous,
                             arg2: e.Current);
 
                         previous = e.Current;
