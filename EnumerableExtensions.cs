@@ -8,24 +8,38 @@ namespace Extensions
     {
         #region Public Methods
 
-        public static bool AnyItem<T>
-            (this IEnumerable<T> items)
+        public static bool AnyItem<T>(this IEnumerable<T> items)
         {
             var result = items?.Any() ?? false;
 
             return result;
         }
 
-        public static bool AnyNonDefault<T>
-            (this IEnumerable<T> items)
+        public static bool AnyNonDefaultItem<T>(this IEnumerable<T> items)
         {
             var result = items?.Any(s => !s.IsDefault()) ?? false;
 
             return result;
         }
 
-        public static IEnumerable<IList<T>> ChunkAfter<T>
-            (this IEnumerable<T> source, Func<T, bool> property)
+        public static IDictionary<U, IEnumerable<T>> AsDictionary<T, U>(this IEnumerable<T> source, Func<T, U> keyGetter)
+        {
+            var result = new Dictionary<U, IEnumerable<T>>();
+
+            var keyGroups = source
+                .GroupBy(s => keyGetter.Invoke(s)).ToArray();
+
+            foreach (var keyGroup in keyGroups)
+            {
+                result.Add(
+                    key: keyGroup.Key,
+                    value: keyGroup);
+            }
+
+            return result;
+        }
+
+        public static IEnumerable<IList<T>> ChunkAfter<T>(this IEnumerable<T> source, Func<T, bool> predicate)
         {
             var result = new List<T>();
 
@@ -33,7 +47,7 @@ namespace Extensions
             {
                 result.Add(item);
 
-                if (property?.Invoke(item) ?? false && result.Any())
+                if (result.Any() && (predicate?.Invoke(item) ?? false))
                 {
                     yield return result;
                     result = new List<T>();
@@ -46,14 +60,13 @@ namespace Extensions
             }
         }
 
-        public static IEnumerable<IList<T>> ChunkBefore<T>
-            (this IEnumerable<T> source, Func<T, bool> property)
+        public static IEnumerable<IList<T>> ChunkBefore<T>(this IEnumerable<T> source, Func<T, bool> predicate)
         {
             var result = new List<T>();
 
             foreach (var item in source)
             {
-                if (property?.Invoke(item) ?? false && result.Any())
+                if (result.Any() && (predicate?.Invoke(item) ?? false))
                 {
                     yield return result;
                     result = new List<T>();
@@ -68,8 +81,7 @@ namespace Extensions
             }
         }
 
-        public static IEnumerable<U> Consecutive<T, U>
-            (this IEnumerable<T> source, Func<T, T, U> getter)
+        public static IEnumerable<U> Consecutive<T, U>(this IEnumerable<T> source, Func<T, T, U> getter)
         {
             if (source == null)
             {
@@ -104,8 +116,29 @@ namespace Extensions
             }
         }
 
-        public static T ElementAtOrFirst<T>
-            (this IEnumerable<T> items, int index)
+        public static void CreateUnique<T>(this IEnumerable<T> items, Func<T, string> getter, Action<T, string> setter)
+        {
+            var basis = items
+                .Select(c => getter?.Invoke(c))
+                .Distinct().Single();
+
+            var digits = (int)Math.Floor(Math.Log10(items.Count() + 1) + 1);
+
+            var format = $"D{digits}";
+
+            var index = 1;
+            foreach (var item in items)
+            {
+                var value = basis + index.ToString(format);
+                setter?.Invoke(
+                    arg1: item,
+                    arg2: value);
+
+                index++;
+            }
+        }
+
+        public static T ElementAtOrFirst<T>(this IEnumerable<T> items, int index)
         {
             var result = default(T);
 
@@ -119,30 +152,27 @@ namespace Extensions
             return result;
         }
 
-        public static bool EqualsOrDefault<T>
-            (this IEnumerable<T> x, IEnumerable<T> y)
+        public static bool EqualsOrDefault<T>(this IEnumerable<T> x, IEnumerable<T> y)
         {
             return x == default
                 || (x?.GetSequenceHashOrdered() ?? 0) == (y?.GetSequenceHashOrdered() ?? 0);
         }
 
-        public static TProp FirstNonNullOrDefault<T, TProp>
-            (this IEnumerable<T> items, Func<T, TProp> property)
+        public static TProp FirstNonNullOrDefault<T, TProp>(this IEnumerable<T> items, Func<T, TProp> property)
         {
             return items
                 .Select(property)
                 .FirstOrDefault(s => !s.IsDefault());
         }
 
-        public static IEnumerable<IEnumerable<T>> GroupByHash<T, TProperty>
-            (this IEnumerable<T> source, params Func<T, TProperty>[] properties)
+        public static IEnumerable<IEnumerable<T>> GroupByHash<T, TProperty>(this IEnumerable<T> source,
+            params Func<T, TProperty>[] properties)
         {
             return source.ToArray()
                 .GroupBy(s => properties.Select(p => p(s)).GetSequenceHash()).ToArray();
         }
 
-        public static IEnumerable<T> IfAny<T>
-            (this IEnumerable<T> sequence)
+        public static IEnumerable<T> IfAny<T>(this IEnumerable<T> sequence)
         {
             if (sequence?.Any() ?? false)
             {
@@ -153,8 +183,40 @@ namespace Extensions
             }
         }
 
-        public static IEnumerable<TResult> Pairwise<TSource, TResult>
-            (this IEnumerable<TSource> source, Func<TSource, TSource, TResult> pairs)
+        public static IEnumerable<IEnumerable<T>> NonIntersectingGroups<T, U, V>(this IEnumerable<T> items,
+            Func<T, U> keyGetter, Func<T, V> valuesGetter, Func<T, U> compareKeyGetter, Func<T, V> compareValuesGetter)
+        {
+            var resultGroups = items.AsDictionary(keyGetter);
+
+            var compareGroups = items.AsDictionary(compareKeyGetter);
+
+            foreach (var resultGroup in resultGroups)
+            {
+                var hasNonIntersecting = false;
+
+                if (compareGroups.ContainsKey(resultGroup.Key))
+                {
+                    var resultValue = resultGroup.Value
+                        .Select((v) => valuesGetter.Invoke(v))
+                        .Distinct().ToArray();
+                    var compareValues = compareGroups[resultGroup.Key]
+                        .Select((v) => compareValuesGetter.Invoke(v))
+                        .Distinct().ToArray();
+
+                    hasNonIntersecting = resultValue
+                        .Union(compareValues)
+                        .Except(resultValue.Intersect(compareValues)).Any();
+                }
+
+                if (!hasNonIntersecting)
+                {
+                    yield return resultGroup.Value;
+                }
+            }
+        }
+
+        public static IEnumerable<TResult> Pairwise<TSource, TResult>(this IEnumerable<TSource> source,
+            Func<TSource, TSource, TResult> pairs)
         {
             if (source == null)
             {
@@ -188,8 +250,7 @@ namespace Extensions
             }
         }
 
-        public static IEnumerable<IEnumerable<T>> Segmented<T>
-            (this IEnumerable<IEnumerable<T>> groups)
+        public static IEnumerable<IEnumerable<T>> Segmented<T>(this IEnumerable<IEnumerable<T>> groups)
         {
             var given = groups
                 .SelectMany(g => g)
@@ -214,8 +275,7 @@ namespace Extensions
             }
         }
 
-        public static bool SequenceEqualNullable<T>
-            (this IEnumerable<T> current, IEnumerable<T> other,
+        public static bool SequenceEqualNullable<T>(this IEnumerable<T> current, IEnumerable<T> other,
             IEqualityComparer<T> comparer = null)
         {
             if (current.AnyItem() && other.AnyItem())
@@ -232,8 +292,7 @@ namespace Extensions
             }
         }
 
-        public static IEnumerable<IEnumerable<T>> SplitAt<T>
-            (this IEnumerable<T> items, Func<T, bool> predicate)
+        public static IEnumerable<IEnumerable<T>> SplitAt<T>(this IEnumerable<T> items, Func<T, bool> predicate)
         {
             var from = 0;
 
@@ -253,8 +312,7 @@ namespace Extensions
             } while (true);
         }
 
-        public static IEnumerable<IEnumerable<T>> SplitAt<T>
-            (this IEnumerable<IEnumerable<T>> items, Func<T, bool> predicate)
+        public static IEnumerable<IEnumerable<T>> SplitAt<T>(this IEnumerable<IEnumerable<T>> items, Func<T, bool> predicate)
         {
             foreach (var s in items)
             {
@@ -269,8 +327,8 @@ namespace Extensions
             }
         }
 
-        public static IEnumerable<IList<T>> SplitAtChange<T, TProperty>
-            (this IEnumerable<T> source, Func<T, TProperty> property)
+        public static IEnumerable<IList<T>> SplitAtChange<T, TProperty>(this IEnumerable<T> source,
+            Func<T, TProperty> property)
         {
             var result = new List<T>();
             var last = default(TProperty);
