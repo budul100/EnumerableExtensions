@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Extensions
+namespace EnumerableExtensions
 {
     public static class EnumerableExtensions
     {
@@ -215,7 +216,7 @@ namespace Extensions
             }
         }
 
-        public static IEnumerable<TResult> Pairwise<TSource, TResult>(this IEnumerable<TSource> source,
+        public static IEnumerable<TResult> Paired<TSource, TResult>(this IEnumerable<TSource> source,
             Func<TSource, TSource, TResult> pairs)
         {
             if (source == null)
