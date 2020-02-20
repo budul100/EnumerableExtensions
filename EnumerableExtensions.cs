@@ -166,8 +166,35 @@ namespace EnumerableExtensions
                 .FirstOrDefault(s => !s.IsDefault());
         }
 
-        public static IEnumerable<IEnumerable<T>> GroupByHash<T, TProperty>(this IEnumerable<T> source,
-            params Func<T, TProperty>[] properties)
+        public static IEnumerable<IEnumerable<T>> Framed<T>(this IEnumerable<T> items, Func<T, bool> predicate)
+        {
+            if (items?.Any() ?? false)
+            {
+                var result = new List<T>();
+
+                foreach (var item in items)
+                {
+                    if (result.Any()
+                        || (predicate?.Invoke(item) ?? false))
+                    {
+                        result.Add(item);
+                    }
+
+                    if (result.Count() > 1
+                        && (predicate?.Invoke(item) ?? false))
+                    {
+                        yield return result;
+
+                        result = new List<T>
+                    {
+                        item
+                    };
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<IEnumerable<T>> GroupByHash<T, TProperty>(this IEnumerable<T> source, params Func<T, TProperty>[] properties)
         {
             return source.ToArray()
                 .GroupBy(s => properties.Select(p => p(s)).GetSequenceHash()).ToArray();
@@ -293,41 +320,6 @@ namespace EnumerableExtensions
             }
         }
 
-        public static IEnumerable<IEnumerable<T>> SplitAt<T>(this IEnumerable<T> items, Func<T, bool> predicate)
-        {
-            var from = 0;
-
-            do
-            {
-                var current = items.GetSplittedTo(
-                    predicate: predicate,
-                    from: from).ToList();
-                if (!current.Any())
-                {
-                    yield break;
-                }
-
-                yield return current;
-
-                from = from + current.Count() - 1;
-            } while (true);
-        }
-
-        public static IEnumerable<IEnumerable<T>> SplitAt<T>(this IEnumerable<IEnumerable<T>> items, Func<T, bool> predicate)
-        {
-            foreach (var s in items)
-            {
-                var current = s
-                    .SplitAt(predicate)
-                    .ToList();
-
-                foreach (var c in current)
-                {
-                    yield return c;
-                }
-            }
-        }
-
         public static IEnumerable<IList<T>> SplitAtChange<T, TProperty>(this IEnumerable<T> source,
             Func<T, TProperty> property)
         {
@@ -395,25 +387,6 @@ namespace EnumerableExtensions
                     if (i == newGroups.Count())
                     {
                         yield return b;
-                    }
-                }
-            }
-        }
-
-        private static IEnumerable<T> GetSplittedTo<T>
-            (this IEnumerable<T> items, Func<T, bool> predicate, int from)
-        {
-            if (from < items.Count() - 1)
-            {
-                for (int i = from; i < items.Count(); i++)
-                {
-                    var current = items.ElementAt(i);
-
-                    yield return current;
-
-                    if (i > from && (predicate?.Invoke(current) ?? false))
-                    {
-                        yield break;
                     }
                 }
             }
