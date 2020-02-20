@@ -211,38 +211,6 @@ namespace EnumerableExtensions
             }
         }
 
-        public static IEnumerable<IEnumerable<T>> NonIntersectingGroups<T, U, V>(this IEnumerable<T> items,
-            Func<T, U> keyGetter, Func<T, V> valuesGetter, Func<T, U> compareKeyGetter, Func<T, V> compareValuesGetter)
-        {
-            var resultGroups = items.AsDictionary(keyGetter);
-
-            var compareGroups = items.AsDictionary(compareKeyGetter);
-
-            foreach (var resultGroup in resultGroups)
-            {
-                var hasNonIntersecting = false;
-
-                if (compareGroups.ContainsKey(resultGroup.Key))
-                {
-                    var resultValue = resultGroup.Value
-                        .Select((v) => valuesGetter.Invoke(v))
-                        .Distinct().ToArray();
-                    var compareValues = compareGroups[resultGroup.Key]
-                        .Select((v) => compareValuesGetter.Invoke(v))
-                        .Distinct().ToArray();
-
-                    hasNonIntersecting = resultValue
-                        .Union(compareValues)
-                        .Except(resultValue.Intersect(compareValues)).Any();
-                }
-
-                if (!hasNonIntersecting)
-                {
-                    yield return resultGroup.Value;
-                }
-            }
-        }
-
         public static IEnumerable<TResult> Paired<TSource, TResult>(this IEnumerable<TSource> source,
             Func<TSource, TSource, TResult> pairs)
         {
@@ -358,8 +326,8 @@ namespace EnumerableExtensions
 
         #region Private Methods
 
-        private static IEnumerable<T> GetItemGroup<T>
-            (this IEnumerable<IEnumerable<T>> groups, IEnumerable<T> items, T item)
+        private static IEnumerable<T> GetItemGroup<T>(this IEnumerable<IEnumerable<T>> groups, IEnumerable<T> items,
+            T item)
         {
             var givenGroups = groups
                 .Where(g => g.Contains(item))
