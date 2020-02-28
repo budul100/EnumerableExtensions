@@ -186,9 +186,9 @@ namespace EnumerableExtensions
                         yield return result;
 
                         result = new List<T>
-                    {
-                        item
-                    };
+                        {
+                            item
+                        };
                     }
                 }
             }
@@ -285,6 +285,35 @@ namespace EnumerableExtensions
             else
             {
                 return !current.AnyItem() && !other.AnyItem();
+            }
+        }
+
+        public static IEnumerable<IEnumerable<T>> SplitAt<T>(this IEnumerable<T> items, Func<T, bool> predicate)
+        {
+            if (items?.Any() ?? false)
+            {
+                var result = new List<T>();
+
+                foreach (var item in items)
+                {
+                    result.Add(item);
+
+                    if (result.Count() > 1
+                        && (predicate?.Invoke(item) ?? false))
+                    {
+                        yield return result;
+
+                        result = new List<T>
+                        {
+                            item
+                        };
+                    }
+                }
+
+                if (result.Count() > 1)
+                {
+                    yield return result;
+                }
             }
         }
 
