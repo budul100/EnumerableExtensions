@@ -23,9 +23,9 @@ namespace EnumerableExtensions
             return result;
         }
 
-        public static IDictionary<U, IEnumerable<T>> AsDictionary<T, U>(this IEnumerable<T> items, Func<T, U> keyGetter)
+        public static IDictionary<TKey, IEnumerable<T>> AsDictionary<T, TKey>(this IEnumerable<T> items, Func<T, TKey> keyGetter)
         {
-            var result = new Dictionary<U, IEnumerable<T>>();
+            var result = new Dictionary<TKey, IEnumerable<T>>();
 
             var keyGroups = items
                 .GroupBy(s => keyGetter.Invoke(s)).ToArray();
@@ -40,11 +40,11 @@ namespace EnumerableExtensions
             return result;
         }
 
-        public static IEnumerable<IList<T>> ChunkAfter<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        public static IEnumerable<IEnumerable<T>> ChunkAfter<T>(this IEnumerable<T> items, Func<T, bool> predicate)
         {
             var result = new List<T>();
 
-            foreach (var item in source)
+            foreach (var item in items)
             {
                 result.Add(item);
 
@@ -61,11 +61,11 @@ namespace EnumerableExtensions
             }
         }
 
-        public static IEnumerable<IList<T>> ChunkBefore<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        public static IEnumerable<IEnumerable<T>> ChunkBefore<T>(this IEnumerable<T> items, Func<T, bool> predicate)
         {
             var result = new List<T>();
 
-            foreach (var item in source)
+            foreach (var item in items)
             {
                 if (result.Any() && (predicate?.Invoke(item) ?? false))
                 {
@@ -82,45 +82,45 @@ namespace EnumerableExtensions
             }
         }
 
-        public static IEnumerable<U> Consecutive<T, U>(this IEnumerable<T> source, Func<T, T, U> getter)
+        public static IEnumerable<U> Consecutive<T, U>(this IEnumerable<T> items, Func<T, T, U> getter)
         {
-            if (source == null)
+            if (items == default)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(items));
             }
 
-            if (getter == null)
+            if (getter == default)
             {
                 throw new ArgumentNullException(nameof(getter));
             }
 
-            if (source.Any())
+            if (items.Any())
             {
                 var previous = default(T);
 
-                using (var enumerator = source.GetEnumerator())
+                using (var enumerator = items.GetEnumerator())
                 {
                     while (enumerator.MoveNext())
                     {
                         if (!previous.IsDefault())
-                            yield return getter(
+                            yield return getter.Invoke(
                                 arg1: previous,
                                 arg2: enumerator.Current);
 
                         previous = enumerator.Current;
                     }
 
-                    yield return getter(
+                    yield return getter.Invoke(
                         arg1: previous,
                         arg2: default);
                 }
             }
         }
 
-        public static IEnumerable<T> DistinctSuccessive<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer = default)
+        public static IEnumerable<T> DistinctSuccessive<T>(this IEnumerable<T> items, IEqualityComparer<T> comparer = default)
         {
-            if (source == default)
-                throw new ArgumentNullException(nameof(source));
+            if (items == default)
+                throw new ArgumentNullException(nameof(items));
 
             bool equals(T left, T right) => comparer == default
               ? object.Equals(left, right)
@@ -129,11 +129,13 @@ namespace EnumerableExtensions
             var first = true;
             var prior = default(T);
 
-            foreach (var item in source)
+            foreach (var item in items)
             {
-                if (first || !equals(
+                var isDifferent = first || !equals(
                     left: item,
-                    right: prior))
+                    right: prior);
+
+                if (isDifferent)
                     yield return item;
 
                 first = false;
@@ -161,7 +163,7 @@ namespace EnumerableExtensions
                 || (x?.GetSequenceHashOrdered() ?? 0) == (y?.GetSequenceHashOrdered() ?? 0);
         }
 
-        public static TProp FirstNonNullOrDefault<T, TProp>(this IEnumerable<T> items, Func<T, TProp> property)
+        public static TProperty FirstNonNullOrDefault<T, TProperty>(this IEnumerable<T> items, Func<T, TProperty> property)
         {
             return items
                 .Select(property)
@@ -182,7 +184,7 @@ namespace EnumerableExtensions
                         result.Add(item);
                     }
 
-                    if (result.Count() > 1
+                    if (result.Count > 1
                         && (predicate?.Invoke(item) ?? false))
                     {
                         yield return result;
@@ -196,39 +198,40 @@ namespace EnumerableExtensions
             }
         }
 
-        public static IEnumerable<IEnumerable<T>> GroupByHash<T, TProperty>(this IEnumerable<T> source, params Func<T, TProperty>[] properties)
+        public static IEnumerable<IEnumerable<T>> GroupByHash<T, TProperty>(this IEnumerable<T> items, params Func<T, TProperty>[] properties)
         {
-            return source.ToArray()
-                .GroupBy(s => properties.Select(p => p(s)).GetSequenceHash()).ToArray();
+            var result = items
+                .GroupBy(s => properties.GetSequenceHash(p => p(s))).ToArray();
+
+            return result;
         }
 
-        public static IEnumerable<T> IfAny<T>(this IEnumerable<T> sequence)
+        public static IEnumerable<T> IfAny<T>(this IEnumerable<T> items)
         {
-            if (sequence?.Any() ?? false)
+            if (items?.Any() ?? false)
             {
-                foreach (var s in sequence)
+                foreach (var item in items)
                 {
-                    yield return s;
+                    yield return item;
                 }
             }
         }
 
-        public static IEnumerable<TResult> Paired<TSource, TResult>(this IEnumerable<TSource> source,
-            Func<TSource, TSource, TResult> pairs)
+        public static IEnumerable<U> Paired<T, U>(this IEnumerable<T> items, Func<T, T, U> pairs)
         {
-            if (source == null)
+            if (items == default)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(items));
             }
 
-            if (pairs == null)
+            if (pairs == default)
             {
                 throw new ArgumentNullException(nameof(pairs));
             }
 
-            if (source.Any())
+            if (items.Any())
             {
-                using (var enumerator = source.GetEnumerator())
+                using (var enumerator = items.GetEnumerator())
                 {
                     if (!enumerator.MoveNext())
                     {
@@ -248,37 +251,12 @@ namespace EnumerableExtensions
             }
         }
 
-        public static IEnumerable<IEnumerable<T>> Segmented<T>(this IEnumerable<IEnumerable<T>> groups)
-        {
-            var given = groups
-                .SelectMany(g => g)
-                .Where(g => !g.IsDefault()).ToArray();
-
-            while (given?.Count() > 0)
-            {
-                given = given
-                    .OrderBy(b => b)
-                    .ToArray();
-
-                var result = groups.GetItemGroup(
-                    items: given,
-                    item: given.First())
-                    .Distinct().ToArray();
-
-                yield return result;
-
-                given = given
-                    .Except(result)
-                    .ToArray();
-            }
-        }
-
         public static bool SequenceEqualNullable<T>(this IEnumerable<T> current, IEnumerable<T> other,
-            IEqualityComparer<T> comparer = null)
+            IEqualityComparer<T> comparer = default)
         {
             if (current.AnyItem() && other.AnyItem())
             {
-                return comparer == null
+                return comparer == default
                     ? current.SequenceEqual(other)
                     : current.SequenceEqual(
                         second: other,
@@ -300,7 +278,7 @@ namespace EnumerableExtensions
                 {
                     result.Add(item);
 
-                    if (result.Count() > 1
+                    if (result.Count > 1
                         && (predicate?.Invoke(item) ?? false))
                     {
                         yield return result;
@@ -312,15 +290,14 @@ namespace EnumerableExtensions
                     }
                 }
 
-                if (result.Count() > 1)
+                if (result.Count > 1)
                 {
                     yield return result;
                 }
             }
         }
 
-        public static IEnumerable<IList<T>> SplitAtChange<T, TProperty>(this IEnumerable<T> source,
-            Func<T, TProperty> property)
+        public static IEnumerable<IList<T>> SplitAtChange<T, TProperty>(this IEnumerable<T> source, Func<T, TProperty> property)
         {
             var result = new List<T>();
             var last = default(TProperty);
@@ -356,40 +333,6 @@ namespace EnumerableExtensions
         #endregion Public Methods
 
         #region Private Methods
-
-        private static IEnumerable<T> GetItemGroup<T>(this IEnumerable<IEnumerable<T>> groups, IEnumerable<T> items,
-            T item)
-        {
-            var givenGroups = groups
-                .Where(g => g.Contains(item))
-                .ToArray();
-
-            foreach (var b in items)
-            {
-                var newGroups = groups
-                    .Where(g => g.Contains(b))
-                    .ToArray();
-
-                if (newGroups.Count() == givenGroups.Count())
-                {
-                    var i = 0;
-                    while (i < newGroups.Count())
-                    {
-                        if (!newGroups[i].SequenceEqual(givenGroups[i]))
-                        {
-                            break;
-                        }
-
-                        i++;
-                    }
-
-                    if (i == newGroups.Count())
-                    {
-                        yield return b;
-                    }
-                }
-            }
-        }
 
         private static bool IsDefault<T>(this T x)
         {
