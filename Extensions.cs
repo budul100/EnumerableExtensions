@@ -1,11 +1,11 @@
-﻿using Extensions;
+﻿using HashExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace EnumerableExtensions
 {
-    public static class EnumerableExtensions
+    public static class Extensions
     {
         #region Public Methods
 
@@ -23,11 +23,11 @@ namespace EnumerableExtensions
             return result;
         }
 
-        public static IDictionary<U, IEnumerable<T>> AsDictionary<T, U>(this IEnumerable<T> source, Func<T, U> keyGetter)
+        public static IDictionary<U, IEnumerable<T>> AsDictionary<T, U>(this IEnumerable<T> items, Func<T, U> keyGetter)
         {
             var result = new Dictionary<U, IEnumerable<T>>();
 
-            var keyGroups = source
+            var keyGroups = items
                 .GroupBy(s => keyGetter.Invoke(s)).ToArray();
 
             foreach (var keyGroup in keyGroups)
@@ -98,16 +98,16 @@ namespace EnumerableExtensions
             {
                 var previous = default(T);
 
-                using (var e = source.GetEnumerator())
+                using (var enumerator = source.GetEnumerator())
                 {
-                    while (e.MoveNext())
+                    while (enumerator.MoveNext())
                     {
                         if (!previous.IsDefault())
                             yield return getter(
                                 arg1: previous,
-                                arg2: e.Current);
+                                arg2: enumerator.Current);
 
-                        previous = e.Current;
+                        previous = enumerator.Current;
                     }
 
                     yield return getter(
@@ -117,25 +117,27 @@ namespace EnumerableExtensions
             }
         }
 
-        public static void CreateUnique<T>(this IEnumerable<T> items, Func<T, string> getter, Action<T, string> setter)
+        public static IEnumerable<T> DistinctSuccessive<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer = default)
         {
-            var basis = items
-                .Select(c => getter?.Invoke(c))
-                .Distinct().Single();
+            if (source == default)
+                throw new ArgumentNullException(nameof(source));
 
-            var digits = (int)Math.Floor(Math.Log10(items.Count() + 1) + 1);
+            bool equals(T left, T right) => comparer == default
+              ? object.Equals(left, right)
+              : comparer.Equals(left, right);
 
-            var format = $"D{digits}";
+            var first = true;
+            var prior = default(T);
 
-            var index = 1;
-            foreach (var item in items)
+            foreach (var item in source)
             {
-                var value = basis + index.ToString(format);
-                setter?.Invoke(
-                    arg1: item,
-                    arg2: value);
+                if (first || !equals(
+                    left: item,
+                    right: prior))
+                    yield return item;
 
-                index++;
+                first = false;
+                prior = item;
             }
         }
 
@@ -226,21 +228,21 @@ namespace EnumerableExtensions
 
             if (source.Any())
             {
-                using (var e = source.GetEnumerator())
+                using (var enumerator = source.GetEnumerator())
                 {
-                    if (!e.MoveNext())
+                    if (!enumerator.MoveNext())
                     {
                         yield break;
                     }
 
-                    var previous = e.Current;
-                    while (e.MoveNext())
+                    var previous = enumerator.Current;
+                    while (enumerator.MoveNext())
                     {
                         yield return pairs(
                             arg1: previous,
-                            arg2: e.Current);
+                            arg2: enumerator.Current);
 
-                        previous = e.Current;
+                        previous = enumerator.Current;
                     }
                 }
             }
