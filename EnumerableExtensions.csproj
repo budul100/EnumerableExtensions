@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
@@ -12,7 +12,7 @@
     <RepositoryUrl>https://github.com/budul100/EnumerableExtensions</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>Enumerables, Enumerable helpers</PackageTags>
-    <Description>Multiple extension methods to determine, manipulate and adjust enumerable data sets.</Description>
+    <Description>Multiple extension methods to determine, manipulate and adjust enumerable data</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
