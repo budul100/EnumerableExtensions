@@ -250,7 +250,7 @@ namespace EnumerableExtensions
             if (items.AnyItem())
             {
                 result = items
-                    .Select(i => i.Get(property))
+                    .Select(i => property?.Invoke(i)?.ToString())
                     .Where(i => !string.IsNullOrWhiteSpace(i))
                     .Merge(delimiter);
             }
@@ -258,11 +258,11 @@ namespace EnumerableExtensions
             return result;
         }
 
-        public static string Merge<T>(this IEnumerable<T> values, string delimiter = ",")
+        public static string Merge<T>(this IEnumerable<T> items, string delimiter = ",")
         {
-            var result = values.Merge<T, string>(
-                property: default,
-                delimiter: delimiter);
+            var result = string.Join(
+                separator: delimiter,
+                values: items);
 
             return result;
         }
@@ -386,14 +386,6 @@ namespace EnumerableExtensions
         #endregion Public Methods
 
         #region Private Methods
-
-        private static string Get<T, TProp>(this T item, Func<T, TProp> property)
-        {
-            var result = property?.Invoke(item)?.ToString()
-                ?? item?.ToString();
-
-            return result;
-        }
 
         private static bool IsDefault<T>(this T item)
         {
