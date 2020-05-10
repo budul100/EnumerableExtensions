@@ -171,8 +171,15 @@ namespace EnumerableExtensions
 
         public static bool EqualsOrDefault<T>(this IEnumerable<T> current, IEnumerable<T> other)
         {
-            return current == default
-                || (current?.GetSequenceHashOrdered() ?? 0) == (other?.GetSequenceHashOrdered() ?? 0);
+            var result = true;
+
+            if (current.AnyItem())
+            {
+                var currentSet = new HashSet<T>(current);
+                result = currentSet.SetEquals(other);
+            }
+
+            return result;
         }
 
         public static TProperty FirstNonNullOrDefault<T, TProperty>(this IEnumerable<T> items, Func<T, TProperty> property)
