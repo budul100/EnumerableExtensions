@@ -33,6 +33,28 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void Consecutive()
+        {
+            var values = new string[] { "a", "b", "c" };
+
+            var result = values
+                .Consecutive((x, y) => new { x, y }).ToArray();
+
+            Assert.IsTrue(result.Count() == 3);
+        }
+
+        [Test]
+        public void Paired()
+        {
+            var values = new string[] { "a", "b", "c" };
+
+            var result = values
+                .Paired((x, y) => new { x, y }).ToArray();
+
+            Assert.IsTrue(result.Count() == 2);
+        }
+
+        [Test]
         public void SplitAtChange()
         {
             var values = new TestObject[] {
