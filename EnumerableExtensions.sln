@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnumerableExtensions", "EnumerableExtensions.csproj", "{0BFE9912-C1EE-45F1-AF5A-8948A3B222AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnumerableExtensions", "EnumerableExtensions\EnumerableExtensions.csproj", "{0BFE9912-C1EE-45F1-AF5A-8948A3B222AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnumerableExtensionsTests", "EnumerableExtensionsTests\EnumerableExtensionsTests.csproj", "{BBEA9CA0-AE95-4001-8F3E-DEC859501134}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0BFE9912-C1EE-45F1-AF5A-8948A3B222AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BFE9912-C1EE-45F1-AF5A-8948A3B222AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BFE9912-C1EE-45F1-AF5A-8948A3B222AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBEA9CA0-AE95-4001-8F3E-DEC859501134}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBEA9CA0-AE95-4001-8F3E-DEC859501134}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBEA9CA0-AE95-4001-8F3E-DEC859501134}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBEA9CA0-AE95-4001-8F3E-DEC859501134}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

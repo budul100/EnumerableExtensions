@@ -364,7 +364,7 @@ namespace EnumerableExtensions
 
             foreach (var item in items.IfAny())
             {
-                var current = property != null
+                var current = property != default
                     ? property(item)
                     : default;
 
