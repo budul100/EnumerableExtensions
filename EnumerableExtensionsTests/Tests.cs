@@ -9,7 +9,31 @@ namespace EnumerableExtensionsTests
         #region Public Methods
 
         [Test]
-        public void SpliAtChange()
+        public void AnyNonDefaultFalse()
+        {
+            var values = new TestObject[] {
+                default,
+                default,
+                default,
+            };
+
+            Assert.IsFalse(values.AnyNonDefaultItem());
+        }
+
+        [Test]
+        public void AnyNonDefaultTrue()
+        {
+            var values = new TestObject[] {
+                default,
+                new TestObject { Value1 = 1 },
+                default,
+            };
+
+            Assert.IsTrue(values.AnyNonDefaultItem());
+        }
+
+        [Test]
+        public void SplitAtChange()
         {
             var values = new TestObject[] {
                 new TestObject { Value1 = 1 },

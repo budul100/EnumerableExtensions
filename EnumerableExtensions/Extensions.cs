@@ -18,7 +18,8 @@ namespace EnumerableExtensions
 
         public static bool AnyNonDefaultItem<T>(this IEnumerable<T> items)
         {
-            var result = items?.Any(s => !s.IsDefault()) ?? false;
+            var result = items?.Any(s => !s.IsDefault())
+                ?? false;
 
             return result;
         }
