@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnumerableExtensions", "EnumerableExtensions\EnumerableExtensions.csproj", "{0BFE9912-C1EE-45F1-AF5A-8948A3B222AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnumerableExtensionsTests", "EnumerableExtensionsTests\EnumerableExtensionsTests.csproj", "{BBEA9CA0-AE95-4001-8F3E-DEC859501134}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnumerableExtensionsTests", "EnumerableExtensionsTests\EnumerableExtensionsTests.csproj", "{BBEA9CA0-AE95-4001-8F3E-DEC859501134}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,5 +27,21 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7332D3BF-3070-4B93-91BA-7D0BCC5EF0A5}
+	EndGlobalSection
+	GlobalSection(AutomaticVersions) = postSolution
+		UpdateAssemblyVersion.Release|Any CPU = True
+		UpdateAssemblyFileVersion.Release|Any CPU = False
+		UpdateAssemblyInfoVersion.Release|Any CPU = False
+		AssemblyVersionSettings.Release|Any CPU = None.IncrementOnDemand.NoneWithAutoReset.NoneWithAutoReset
+		UpdatePackageVersion.Release|Any CPU = False
+		AssemblyInfoVersionType.Release|Any CPU = SettingsVersion
+		InheritWinAppVersionFrom.Release|Any CPU = None
+		UpdateAssemblyVersion.Debug|Any CPU = True
+		UpdateAssemblyFileVersion.Debug|Any CPU = False
+		UpdateAssemblyInfoVersion.Debug|Any CPU = False
+		AssemblyVersionSettings.Debug|Any CPU = None.None.None.None
+		UpdatePackageVersion.Debug|Any CPU = False
+		AssemblyInfoVersionType.Debug|Any CPU = SettingsVersion
+		InheritWinAppVersionFrom.Debug|Any CPU = None
 	EndGlobalSection
 EndGlobal
