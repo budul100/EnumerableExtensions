@@ -369,7 +369,7 @@ namespace EnumerableExtensions
                     : default;
 
                 if (result.Any()
-                    && current.IsEqual(last))
+                    && !current.IsEqual(last))
                 {
                     yield return result;
                     result = new List<T>();
