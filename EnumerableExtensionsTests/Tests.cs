@@ -70,6 +70,26 @@ namespace EnumerableExtensionsTests
             Assert.IsTrue(result.Count() == 3);
         }
 
+        [Test]
+        public void ToArrayOrDefault()
+        {
+            var valuesDefault = new TestObject[] { };
+            var valuesNonDefault = new TestObject[] { default, default };
+
+            Assert.IsTrue(valuesDefault.ToArrayOrDefault() == default);
+            Assert.IsFalse(valuesNonDefault.ToArrayOrDefault() == default);
+        }
+
+        [Test]
+        public void ToListOrDefault()
+        {
+            var valuesDefault = new TestObject[] { };
+            var valuesNonDefault = new TestObject[] { default, default };
+
+            Assert.IsTrue(valuesDefault.ToListOrDefault() == default);
+            Assert.IsFalse(valuesNonDefault.ToListOrDefault() == default);
+        }
+
         #endregion Public Methods
 
         #region Private Classes

@@ -386,9 +386,27 @@ namespace EnumerableExtensions
             }
         }
 
+        public static T[] ToArrayOrDefault<T>(this IEnumerable<T> values)
+        {
+            var result = (values?.Any() ?? false)
+                ? values.ToArray()
+                : default;
+
+            return result;
+        }
+
         public static IEnumerable<T> ToEnumerable<T>(this T value)
         {
             yield return value;
+        }
+
+        public static List<T> ToListOrDefault<T>(this IEnumerable<T> values)
+        {
+            var result = (values?.Any() ?? false)
+                ? values.ToList()
+                : default;
+
+            return result;
         }
 
         #endregion Public Methods
