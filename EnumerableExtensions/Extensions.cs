@@ -386,10 +386,12 @@ namespace EnumerableExtensions
             }
         }
 
-        public static T[] ToArrayOrDefault<T>(this IEnumerable<T> values)
+        public static T[] ToArrayOrDefaultX<T>(this IEnumerable<T> values)
         {
-            var result = (values?.Any() ?? false)
-                ? values.ToArray()
+            var relevants = values?.ToArray();
+
+            var result = relevants.AnyItem()
+                ? relevants
                 : default;
 
             return result;
@@ -397,13 +399,17 @@ namespace EnumerableExtensions
 
         public static IEnumerable<T> ToEnumerable<T>(this T value)
         {
-            yield return value;
+            var result = new T[] { value };
+
+            return result;
         }
 
         public static List<T> ToListOrDefault<T>(this IEnumerable<T> values)
         {
-            var result = (values?.Any() ?? false)
-                ? values.ToList()
+            var relevants = values?.ToList();
+
+            var result = relevants.AnyItem()
+                ? relevants
                 : default;
 
             return result;
