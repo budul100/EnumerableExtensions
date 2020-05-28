@@ -386,7 +386,7 @@ namespace EnumerableExtensions
             }
         }
 
-        public static T[] ToArrayOrDefaultX<T>(this IEnumerable<T> values)
+        public static T[] ToArrayOrDefault<T>(this IEnumerable<T> values)
         {
             var relevants = values?.ToArray();
 
