@@ -246,6 +246,18 @@ namespace EnumerableExtensions
             }
         }
 
+        public static T MaxOrDefault<T>(this IEnumerable<T> items)
+        {
+            var result = default(T);
+
+            if (items.AnyItem())
+            {
+                result = items.Max();
+            }
+
+            return result;
+        }
+
         public static string Merge(string delimiter, params string[] items)
         {
             return items.Merge(delimiter);
@@ -271,6 +283,18 @@ namespace EnumerableExtensions
             var result = string.Join(
                 separator: delimiter,
                 values: items);
+
+            return result;
+        }
+
+        public static T MinOrDefault<T>(this IEnumerable<T> items)
+        {
+            var result = default(T);
+
+            if (items.AnyItem())
+            {
+                result = items.Min();
+            }
 
             return result;
         }

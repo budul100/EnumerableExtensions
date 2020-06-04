@@ -25,7 +25,7 @@ namespace EnumerableExtensionsTests
         {
             var values = new TestObject[] {
                 default,
-                new TestObject { Value1 = 1 },
+                new TestObject(1),
                 default,
             };
 
@@ -44,6 +44,26 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void MaxOrDefault()
+        {
+            var valuesDefault = System.Array.Empty<int>();
+            var valuesNonDefault = new int[] { 3, 1, 2, };
+
+            Assert.IsTrue(valuesDefault.MaxOrDefault() == default);
+            Assert.IsTrue(valuesNonDefault.MaxOrDefault() == 3);
+        }
+
+        [Test]
+        public void MinOrDefault()
+        {
+            var valuesDefault = System.Array.Empty<int>();
+            var valuesNonDefault = new int[] { 3, 1, 2, };
+
+            Assert.IsTrue(valuesDefault.MinOrDefault() == default);
+            Assert.IsTrue(valuesNonDefault.MinOrDefault() == 1);
+        }
+
+        [Test]
         public void Paired()
         {
             var values = new string[] { "a", "b", "c" };
@@ -58,10 +78,10 @@ namespace EnumerableExtensionsTests
         public void SplitAtChange()
         {
             var values = new TestObject[] {
-                new TestObject { Value1 = 1 },
-                new TestObject { Value1 = 1 },
-                new TestObject { Value1 = 2 },
-                new TestObject { Value1 = 1 }
+                new TestObject(1),
+                new TestObject(1),
+                new TestObject(2),
+                new TestObject(1),
             };
 
             var result = values
@@ -73,7 +93,7 @@ namespace EnumerableExtensionsTests
         [Test]
         public void ToArrayOrDefault()
         {
-            var valuesDefault = new TestObject[] { };
+            var valuesDefault = System.Array.Empty<TestObject>();
             var valuesNonDefault = new TestObject[] { default, default };
 
             Assert.IsTrue(valuesDefault.ToArrayOrDefault() == default);
@@ -83,7 +103,7 @@ namespace EnumerableExtensionsTests
         [Test]
         public void ToListOrDefault()
         {
-            var valuesDefault = new TestObject[] { };
+            var valuesDefault = System.Array.Empty<TestObject>();
             var valuesNonDefault = new TestObject[] { default, default };
 
             Assert.IsTrue(valuesDefault.ToListOrDefault() == default);
@@ -96,6 +116,18 @@ namespace EnumerableExtensionsTests
 
         private class TestObject
         {
+            #region Public Constructors
+
+            public TestObject()
+            { }
+
+            public TestObject(int value1)
+            {
+                Value1 = value1;
+            }
+
+            #endregion Public Constructors
+
             #region Public Properties
 
             public int Value1 { get; set; }
