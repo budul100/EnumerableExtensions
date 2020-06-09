@@ -246,6 +246,17 @@ namespace EnumerableExtensions
             }
         }
 
+        public static IEnumerable<T> IfAnyNonDefault<T>(this IEnumerable<T> items)
+        {
+            if (items.AnyNonDefaultItem())
+            {
+                foreach (var item in items)
+                {
+                    yield return item;
+                }
+            }
+        }
+
         public static T MaxOrDefault<T>(this IEnumerable<T> items)
         {
             var result = default(T);
@@ -297,6 +308,20 @@ namespace EnumerableExtensions
             }
 
             return result;
+        }
+
+        public static IEnumerable<T> NonDefaults<T>(this IEnumerable<T> items)
+        {
+            if (items.AnyNonDefaultItem())
+            {
+                foreach (var item in items)
+                {
+                    if (!item.IsDefault())
+                    {
+                        yield return item;
+                    }
+                }
+            }
         }
 
         public static IEnumerable<TNew> Paired<T, TNew>(this IEnumerable<T> items, Func<T, T, TNew> getter)

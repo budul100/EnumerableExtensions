@@ -64,6 +64,18 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void NonDefaults()
+        {
+            var values = new TestObject[] {
+                default,
+                new TestObject(1),
+                default,
+            };
+
+            Assert.IsTrue(values.NonDefaults().Count() == 1);
+        }
+
+        [Test]
         public void Paired()
         {
             var values = new string[] { "a", "b", "c" };
