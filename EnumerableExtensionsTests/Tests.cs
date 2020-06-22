@@ -1,5 +1,6 @@
 using EnumerableExtensions;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EnumerableExtensionsTests
@@ -41,6 +42,16 @@ namespace EnumerableExtensionsTests
                 .Consecutive((x, y) => new { x, y }).ToArray();
 
             Assert.IsTrue(result.Count() == 3);
+        }
+
+        [Test]
+        public void IfAny()
+        {
+            TestParent[] values = default;
+            var result = values.IfAny()
+                .SelectMany(t => t.TestObjects).IfAny();
+
+            Assert.IsFalse(result.Any());
         }
 
         [Test]
@@ -143,6 +154,24 @@ namespace EnumerableExtensionsTests
             #region Public Properties
 
             public int Value1 { get; set; }
+
+            #endregion Public Properties
+        }
+
+        private class TestParent
+        {
+            #region Public Constructors
+
+            public TestParent(IEnumerable<TestObject> testObjects)
+            {
+                TestObjects = testObjects;
+            }
+
+            #endregion Public Constructors
+
+            #region Public Properties
+
+            public IEnumerable<TestObject> TestObjects { get; set; }
 
             #endregion Public Properties
         }
