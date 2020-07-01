@@ -1,5 +1,6 @@
 using EnumerableExtensions;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -57,20 +58,24 @@ namespace EnumerableExtensionsTests
         [Test]
         public void MaxOrDefault()
         {
-            var valuesDefault = System.Array.Empty<int>();
+            var valuesDefaultInt = Array.Empty<int>();
+            var valuesDefaultDateTime = Array.Empty<DateTime>();
             var valuesNonDefault = new int[] { 3, 1, 2, };
 
-            Assert.IsTrue(valuesDefault.MaxOrDefault() == default);
+            Assert.IsTrue(valuesDefaultInt.MaxOrDefault() == default);
+            Assert.IsTrue(valuesDefaultDateTime.MaxOrDefault() == default);
             Assert.IsTrue(valuesNonDefault.MaxOrDefault() == 3);
         }
 
         [Test]
         public void MinOrDefault()
         {
-            var valuesDefault = System.Array.Empty<int>();
+            var valuesDefaultInt = Array.Empty<int>();
+            var valuesDefaultDateTime = Array.Empty<DateTime>();
             var valuesNonDefault = new int[] { 3, 1, 2, };
 
-            Assert.IsTrue(valuesDefault.MinOrDefault() == default);
+            Assert.IsTrue(valuesDefaultInt.MinOrDefault() == default);
+            Assert.IsTrue(valuesDefaultDateTime.MinOrDefault() == default);
             Assert.IsTrue(valuesNonDefault.MinOrDefault() == 1);
         }
 
