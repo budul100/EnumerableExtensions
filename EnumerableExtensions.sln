@@ -7,6 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnumerableExtensions", "Enu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnumerableExtensionsTests", "EnumerableExtensionsTests\EnumerableExtensionsTests.csproj", "{BBEA9CA0-AE95-4001-8F3E-DEC859501134}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Additionals", "Additionals", "{52B64C8E-635C-4A18-AD9D-D7EF2AB8AC97}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,21 +32,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7332D3BF-3070-4B93-91BA-7D0BCC5EF0A5}
-	EndGlobalSection
-	GlobalSection(AutomaticVersions) = postSolution
-		UpdateAssemblyVersion.Release|Any CPU = True
-		UpdateAssemblyFileVersion.Release|Any CPU = False
-		UpdateAssemblyInfoVersion.Release|Any CPU = False
-		AssemblyVersionSettings.Release|Any CPU = None.IncrementOnDemand.NoneWithAutoReset.NoneWithAutoReset
-		UpdatePackageVersion.Release|Any CPU = False
-		AssemblyInfoVersionType.Release|Any CPU = SettingsVersion
-		InheritWinAppVersionFrom.Release|Any CPU = None
-		UpdateAssemblyVersion.Debug|Any CPU = True
-		UpdateAssemblyFileVersion.Debug|Any CPU = False
-		UpdateAssemblyInfoVersion.Debug|Any CPU = False
-		AssemblyVersionSettings.Debug|Any CPU = None.None.None.None
-		UpdatePackageVersion.Debug|Any CPU = False
-		AssemblyInfoVersionType.Debug|Any CPU = SettingsVersion
-		InheritWinAppVersionFrom.Debug|Any CPU = None
 	EndGlobalSection
 EndGlobal
