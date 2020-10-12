@@ -24,6 +24,13 @@ namespace EnumerableExtensions
             return result;
         }
 
+        public static T[] AsArray<T>(this T value)
+        {
+            var result = new T[] { value };
+
+            return result;
+        }
+
         public static IDictionary<TKey, IEnumerable<T>> AsDictionary<T, TKey>(this IEnumerable<T> items, Func<T, TKey> keyGetter)
         {
             if (keyGetter == default)
@@ -42,6 +49,20 @@ namespace EnumerableExtensions
                     key: keyGroup.Key,
                     value: keyGroup);
             }
+
+            return result;
+        }
+
+        public static IEnumerable<T> AsEnumerable<T>(this T value)
+        {
+            var result = new T[] { value };
+
+            return result;
+        }
+
+        public static List<T> AsList<T>(this T value)
+        {
+            var result = new List<T> { value };
 
             return result;
         }
@@ -185,9 +206,11 @@ namespace EnumerableExtensions
 
         public static TProperty FirstNonNullOrDefault<T, TProperty>(this IEnumerable<T> items, Func<T, TProperty> property)
         {
-            return items
+            var result = items
                 .Select(property)
                 .FirstOrDefault(s => !s.IsDefault());
+
+            return result;
         }
 
         public static IEnumerable<IEnumerable<T>> Framed<T>(this IEnumerable<T> items, Func<T, bool> predicate)
@@ -231,8 +254,7 @@ namespace EnumerableExtensions
             var result = items?
                 .GroupBy(s => properties.GetSequenceHash(p => p(s))).ToArray();
 
-            return result
-                ?? Enumerable.Empty<IEnumerable<T>>();
+            return result ?? Enumerable.Empty<IEnumerable<T>>();
         }
 
         public static IEnumerable<T> IfAny<T>(this IEnumerable<T> items)
@@ -271,7 +293,9 @@ namespace EnumerableExtensions
 
         public static string Merge(string delimiter, params string[] items)
         {
-            return items.Merge(delimiter);
+            var result = items.Merge(delimiter);
+
+            return result;
         }
 
         public static string Merge<T, TProp>(this IEnumerable<T> items, Func<T, TProp> property, string delimiter = ",")
@@ -437,28 +461,17 @@ namespace EnumerableExtensions
 
         public static T[] ToArrayOrDefault<T>(this IEnumerable<T> values)
         {
-            var relevants = values?.ToArray();
-
-            var result = relevants.AnyItem()
-                ? relevants
+            var result = values.AnyItem()
+                ? values.ToArray()
                 : default;
-
-            return result;
-        }
-
-        public static IEnumerable<T> ToEnumerable<T>(this T value)
-        {
-            var result = new T[] { value };
 
             return result;
         }
 
         public static List<T> ToListOrDefault<T>(this IEnumerable<T> values)
         {
-            var relevants = values?.ToList();
-
-            var result = relevants.AnyItem()
-                ? relevants
+            var result = values.AnyItem()
+                ? values.ToList()
                 : default;
 
             return result;
