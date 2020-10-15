@@ -92,6 +92,27 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void MergeNonDefault()
+        {
+            var values = new string[] { default, default, "c" };
+
+            var result = values.Merge();
+
+            Assert.IsTrue(result != default);
+        }
+
+        [Test]
+        public void MergeDefault()
+        {
+            var values = new string[] { default, default, default };
+
+            var result = values.Merge();
+
+            Assert.IsTrue(result == default);
+        }
+
+
+        [Test]
         public void Paired()
         {
             var values = new string[] { "a", "b", "c" };
