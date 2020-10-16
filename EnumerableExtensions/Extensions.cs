@@ -11,7 +11,12 @@ namespace EnumerableExtensions
 
         public static bool AnyItem<T>(this IEnumerable<T> items)
         {
-            var result = items?.Any() ?? false;
+            var result = false;
+
+            if (items != default)
+            {
+                result = items.Any();
+            }
 
             return result;
         }
@@ -126,7 +131,7 @@ namespace EnumerableExtensions
                 throw new ArgumentNullException(nameof(getter));
             }
 
-            if (items.AnyItem())
+            if (items != default)
             {
                 var previous = default(T);
 
@@ -153,7 +158,7 @@ namespace EnumerableExtensions
 
         public static IEnumerable<T> DistinctSuccessive<T>(this IEnumerable<T> items, IEqualityComparer<T> comparer = default)
         {
-            if (items.AnyItem())
+            if (items != default)
             {
                 bool equals(T left, T right) => comparer == default
                   ? left.Equals(right)
@@ -195,7 +200,7 @@ namespace EnumerableExtensions
         {
             var result = true;
 
-            if (current.AnyItem())
+            if (current != default)
             {
                 var currentSet = new HashSet<T>(current);
                 result = currentSet.SetEquals(other);
@@ -259,7 +264,7 @@ namespace EnumerableExtensions
 
         public static IEnumerable<T> IfAny<T>(this IEnumerable<T> items)
         {
-            if (items.AnyItem())
+            if (items != default)
             {
                 foreach (var item in items)
                 {
@@ -373,7 +378,7 @@ namespace EnumerableExtensions
                 throw new ArgumentNullException(nameof(getter));
             }
 
-            if (items.AnyItem())
+            if (items != default)
             {
                 using (var enumerator = items.GetEnumerator())
                 {
@@ -398,7 +403,8 @@ namespace EnumerableExtensions
         public static bool SequenceEqualNullable<T>(this IEnumerable<T> current, IEnumerable<T> other,
             IEqualityComparer<T> comparer = default)
         {
-            if (current.AnyItem() && other.AnyItem())
+            if (current != default
+                && other != default)
             {
                 return comparer == default
                     ? current.SequenceEqual(other)
@@ -408,7 +414,8 @@ namespace EnumerableExtensions
             }
             else
             {
-                return !current.AnyItem() && !other.AnyItem();
+                return current == default
+                    && other == default;
             }
         }
 
@@ -477,20 +484,26 @@ namespace EnumerableExtensions
             }
         }
 
-        public static T[] ToArrayOrDefault<T>(this IEnumerable<T> values)
+        public static T[] ToArrayOrDefault<T>(this IEnumerable<T> items)
         {
-            var result = values.AnyItem()
-                ? values.ToArray()
-                : default;
+            var result = items?.ToArray();
+
+            if (!items.AnyItem())
+            {
+                result = default;
+            }
 
             return result;
         }
 
-        public static List<T> ToListOrDefault<T>(this IEnumerable<T> values)
+        public static List<T> ToListOrDefault<T>(this IEnumerable<T> items)
         {
-            var result = values.AnyItem()
-                ? values.ToList()
-                : default;
+            var result = items.ToList();
+
+            if (!items.AnyItem())
+            {
+                result = default;
+            }
 
             return result;
         }

@@ -13,33 +13,19 @@ namespace EnumerableExtensionsTests
         [Test]
         public void AnyNonDefaultFalse()
         {
-            var values = new TestObject[] {
-                default,
-                default,
-                default,
-            };
-
-            Assert.IsFalse(values.AnyNonDefaultItem());
+            Assert.IsFalse(GetWithDisposal<TestObject>(default, default, default).AnyNonDefaultItem());
         }
 
         [Test]
         public void AnyNonDefaultTrue()
         {
-            var values = new TestObject[] {
-                default,
-                new TestObject(1),
-                default,
-            };
-
-            Assert.IsTrue(values.AnyNonDefaultItem());
+            Assert.IsTrue(GetWithDisposal(default, new TestObject(1), default).AnyNonDefaultItem());
         }
 
         [Test]
         public void Consecutive()
         {
-            var values = new string[] { "a", "b", "c" };
-
-            var result = values
+            var result = GetWithDisposal("a", "b", "c")
                 .Consecutive((x, y) => new { x, y }).ToArray();
 
             Assert.IsTrue(result.Count() == 3);
@@ -60,11 +46,26 @@ namespace EnumerableExtensionsTests
         {
             var valuesDefaultInt = Array.Empty<int>();
             var valuesDefaultDateTime = Array.Empty<DateTime>();
-            var valuesNonDefault = new int[] { 3, 1, 2, };
 
             Assert.IsTrue(valuesDefaultInt.MaxOrDefault() == default);
             Assert.IsTrue(valuesDefaultDateTime.MaxOrDefault() == default);
-            Assert.IsTrue(valuesNonDefault.MaxOrDefault() == 3);
+            Assert.IsTrue(GetWithDisposal(3, 1, 2).MaxOrDefault() == 3);
+        }
+
+        [Test]
+        public void MergeDefault()
+        {
+            var result = GetWithDisposal<string>(default, default, default).Merge();
+
+            Assert.IsTrue(result == default);
+        }
+
+        [Test]
+        public void MergeNonDefault()
+        {
+            var result = GetWithDisposal(default, default, "c").Merge();
+
+            Assert.IsTrue(result != default);
         }
 
         [Test]
@@ -72,52 +73,22 @@ namespace EnumerableExtensionsTests
         {
             var valuesDefaultInt = Array.Empty<int>();
             var valuesDefaultDateTime = Array.Empty<DateTime>();
-            var valuesNonDefault = new int[] { 3, 1, 2, };
 
             Assert.IsTrue(valuesDefaultInt.MinOrDefault() == default);
             Assert.IsTrue(valuesDefaultDateTime.MinOrDefault() == default);
-            Assert.IsTrue(valuesNonDefault.MinOrDefault() == 1);
+            Assert.IsTrue(GetWithDisposal(3, 1, 2).MinOrDefault() == 1);
         }
 
         [Test]
         public void NonDefaults()
         {
-            var values = new TestObject[] {
-                default,
-                new TestObject(1),
-                default,
-            };
-
-            Assert.IsTrue(values.NonDefaults().Count() == 1);
+            Assert.IsTrue(GetWithDisposal(default, new TestObject(1), default).NonDefaults().Count() == 1);
         }
-
-        [Test]
-        public void MergeNonDefault()
-        {
-            var values = new string[] { default, default, "c" };
-
-            var result = values.Merge();
-
-            Assert.IsTrue(result != default);
-        }
-
-        [Test]
-        public void MergeDefault()
-        {
-            var values = new string[] { default, default, default };
-
-            var result = values.Merge();
-
-            Assert.IsTrue(result == default);
-        }
-
 
         [Test]
         public void Paired()
         {
-            var values = new string[] { "a", "b", "c" };
-
-            var result = values
+            var result = GetWithDisposal("a", "b", "c")
                 .Paired((x, y) => new { x, y }).ToArray();
 
             Assert.IsTrue(result.Count() == 2);
@@ -126,14 +97,7 @@ namespace EnumerableExtensionsTests
         [Test]
         public void SplitAtChange()
         {
-            var values = new TestObject[] {
-                new TestObject(1),
-                new TestObject(1),
-                new TestObject(2),
-                new TestObject(1),
-            };
-
-            var result = values
+            var result = GetWithDisposal(new TestObject(1), new TestObject(1), new TestObject(2), new TestObject(1))
                 .SplitAtChange(v => v.Value1).ToArray();
 
             Assert.IsTrue(result.Count() == 3);
@@ -142,7 +106,7 @@ namespace EnumerableExtensionsTests
         [Test]
         public void ToArrayOrDefault()
         {
-            var valuesDefault = System.Array.Empty<TestObject>();
+            var valuesDefault = Array.Empty<TestObject>();
             var valuesNonDefault = new TestObject[] { default, default };
 
             Assert.IsTrue(valuesDefault.ToArrayOrDefault() == default);
@@ -150,16 +114,49 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void ToArrayOrDefaultWithDisposal()
+        {
+            GetWithDisposal("a", "b", "c").ToArrayOrDefault();
+        }
+
+        [Test]
         public void ToListOrDefault()
         {
-            var valuesDefault = System.Array.Empty<TestObject>();
+            var valuesDefault = Array.Empty<TestObject>();
             var valuesNonDefault = new TestObject[] { default, default };
 
             Assert.IsTrue(valuesDefault.ToListOrDefault() == default);
             Assert.IsFalse(valuesNonDefault.ToListOrDefault() == default);
         }
 
+        [Test]
+        public void ToListOrDefaultWithDisposal()
+        {
+            GetWithDisposal("a", "b", "c").ToListOrDefault();
+        }
+
         #endregion Public Methods
+
+        #region Private Methods
+
+        private IEnumerable<T> GetWithDisposal<T>(params T[] datas)
+        {
+            if (datas == default)
+            {
+                throw new ArgumentNullException(nameof(datas));
+            }
+            using (var disposalClass = new DisposalClass())
+            {
+                foreach (var data in datas)
+                {
+                    yield return data;
+                }
+
+                disposalClass.CanBeDisposed();
+            }
+        }
+
+        #endregion Private Methods
 
         #region Private Classes
 
