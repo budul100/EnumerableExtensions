@@ -23,8 +23,12 @@ namespace EnumerableExtensions
 
         public static bool AnyNonDefaultItem<T>(this IEnumerable<T> items)
         {
-            var result = items?.Any(s => !s.IsDefault())
-                ?? false;
+            var result = false;
+
+            if (items != default)
+            {
+                result = items.Any(i => !i.IsDefault());
+            }
 
             return result;
         }
@@ -359,14 +363,14 @@ namespace EnumerableExtensions
 
         public static IEnumerable<T> NonDefaults<T>(this IEnumerable<T> items)
         {
-            if (items.AnyNonDefaultItem())
+            var relevants = items?
+                .Where(i => !i.IsDefault());
+
+            if (relevants != default)
             {
-                foreach (var item in items)
+                foreach (var relevant in relevants)
                 {
-                    if (!item.IsDefault())
-                    {
-                        yield return item;
-                    }
+                    yield return relevant;
                 }
             }
         }
@@ -488,7 +492,7 @@ namespace EnumerableExtensions
         {
             var result = items?.ToArray();
 
-            if (!items.AnyItem())
+            if (!result.AnyItem())
             {
                 result = default;
             }
@@ -498,9 +502,9 @@ namespace EnumerableExtensions
 
         public static List<T> ToListOrDefault<T>(this IEnumerable<T> items)
         {
-            var result = items.ToList();
+            var result = items?.ToList();
 
-            if (!items.AnyItem())
+            if (!result.AnyItem())
             {
                 result = default;
             }
