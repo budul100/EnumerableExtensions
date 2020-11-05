@@ -300,6 +300,19 @@ namespace EnumerableExtensions
             return result;
         }
 
+        public static Nullable<T> MaxOrNull<T>(this IEnumerable<T> items)
+            where T : struct
+        {
+            var result = default(Nullable<T>);
+
+            if (items.AnyItem())
+            {
+                result = items.Max();
+            }
+
+            return result;
+        }
+
         public static string Merge(string delimiter, params string[] items)
         {
             var result = items.Merge(
@@ -352,6 +365,19 @@ namespace EnumerableExtensions
         public static T MinOrDefault<T>(this IEnumerable<T> items)
         {
             var result = default(T);
+
+            if (items.AnyItem())
+            {
+                result = items.Min();
+            }
+
+            return result;
+        }
+
+        public static Nullable<T> MinOrNull<T>(this IEnumerable<T> items)
+            where T : struct
+        {
+            var result = default(Nullable<T>);
 
             if (items.AnyItem())
             {

@@ -77,6 +77,17 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void MaxOrNull()
+        {
+            var valuesDefaultInt = Array.Empty<int>();
+            var valuesDefaultDateTime = Array.Empty<DateTime>();
+
+            Assert.IsTrue(valuesDefaultInt.MaxOrNull() == default);
+            Assert.IsTrue(valuesDefaultDateTime.MaxOrNull() == default);
+            Assert.IsTrue(GetWithDisposal(3, 1, 2).MaxOrNull() == 3);
+        }
+
+        [Test]
         public void MergeDefault()
         {
             disposalCount = 0;
@@ -112,6 +123,17 @@ namespace EnumerableExtensionsTests
             Assert.IsTrue(valuesDefaultInt.MinOrDefault() == default);
             Assert.IsTrue(valuesDefaultDateTime.MinOrDefault() == default);
             Assert.IsTrue(GetWithDisposal(3, 1, 2).MinOrDefault() == 1);
+        }
+
+        [Test]
+        public void MinOrNull()
+        {
+            var valuesDefaultInt = Array.Empty<int>();
+            var valuesDefaultDateTime = Array.Empty<DateTime>();
+
+            Assert.IsTrue(valuesDefaultInt.MinOrNull() == default);
+            Assert.IsTrue(valuesDefaultDateTime.MinOrNull() == default);
+            Assert.IsTrue(GetWithDisposal(3, 1, 2).MinOrNull() == 1);
         }
 
         [Test]
