@@ -56,6 +56,15 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void ContainsOrEmpty()
+        {
+            var element = new TestObject(1);
+
+            Assert.IsTrue(GetWithDisposal(default, element, default).ContainsOrEmpty(element));
+            Assert.IsTrue(Array.Empty<TestObject>().ContainsOrEmpty(element));
+        }
+
+        [Test]
         public void IfAny()
         {
             TestParent[] values = default;

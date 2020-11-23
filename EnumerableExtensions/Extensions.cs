@@ -160,6 +160,18 @@ namespace EnumerableExtensions
             }
         }
 
+        public static bool ContainsOrEmpty<T>(this IEnumerable<T> items, T item)
+        {
+            var result = true;
+
+            if (items?.Any() ?? false)
+            {
+                result = items.Contains(item);
+            }
+
+            return result;
+        }
+
         public static IEnumerable<T> DistinctSuccessive<T>(this IEnumerable<T> items, IEqualityComparer<T> comparer = default)
         {
             if (items != default)
