@@ -291,6 +291,11 @@ namespace EnumerableExtensions
 
         public static IEnumerable<T> IfAnyNonDefault<T>(this IEnumerable<T> items)
         {
+            if (items == default)
+            {
+                throw new ArgumentNullException(nameof(items));
+            }
+
             if (items.AnyNonDefaultItem())
             {
                 foreach (var item in items)
@@ -548,6 +553,24 @@ namespace EnumerableExtensions
             }
 
             return result;
+        }
+
+        public static IEnumerable<T> WithoutLast<T>(this IEnumerable<T> items, int number = 1)
+        {
+            if (items != default)
+            {
+                var length = items.Count();
+
+                if (number > length)
+                {
+                    number = length;
+                }
+
+                for (int index = 0; index < length - number; index++)
+                {
+                    yield return items.ElementAt(index);
+                }
+            }
         }
 
         #endregion Public Methods

@@ -232,6 +232,22 @@ namespace EnumerableExtensionsTests
             Assert.True(disposalCount == 1);
         }
 
+        [Test]
+        public void WithoutLast()
+        {
+            var result = GetWithDisposal("a", "b", "c").WithoutLast(2);
+
+            Assert.IsTrue(result.Count() == 1);
+        }
+
+        [Test]
+        public void WithoutLastTooMuch()
+        {
+            var result = GetWithDisposal("a", "b", "c").WithoutLast(4);
+
+            Assert.IsFalse(result.Any());
+        }
+
         #endregion Public Methods
 
         #region Private Methods
