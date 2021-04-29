@@ -198,14 +198,14 @@ namespace EnumerableExtensions
             }
         }
 
-        public static T ElementAtOrFirst<T>(this IEnumerable<T> items, int index)
+        public static T ElementAtOrSingle<T>(this IEnumerable<T> items, int index)
         {
             var result = default(T);
 
             if (items?.Any() ?? false)
             {
                 result = items.Count() == 1
-                    ? items.ElementAt(0)
+                    ? items.Single()
                     : items.ElementAt(index);
             }
 
