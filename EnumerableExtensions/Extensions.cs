@@ -305,9 +305,12 @@ namespace EnumerableExtensions
             }
         }
 
-        public static IEnumerable<int> Indexes(this IEnumerable<object> items, params IEnumerable<object>[] others)
+        public static IEnumerable<int> Indexes(this System.Collections.IEnumerable items, params System.Collections.IEnumerable[] others)
         {
-            var length = items.CountMax(others);
+            var enumerators = items
+                .GetEnumerators(others).ToArray();
+
+            var length = enumerators.CountMax();
 
             for (var index = 0; index < length; index++)
             {
@@ -587,22 +590,42 @@ namespace EnumerableExtensions
 
         #region Private Methods
 
-        private static int CountMax<T>(this IEnumerable<T> items, params IEnumerable<T>[] others)
+        private static int CountMax(this IEnumerable<System.Collections.IEnumerator> enumerators)
         {
-            var result = items.AnyItem()
-                ? items.Count()
-                : 0;
-
-            foreach (var other in others.IfAny())
+            var result = 0;
+            foreach (var enumerator in enumerators)
             {
-                if (other.AnyItem()
-                    && other.Count() > result)
+                var current = 0;
+
+                while (enumerator.MoveNext())
                 {
-                    result = other.Count();
+                    current++;
+                }
+
+                if (current > result)
+                {
+                    result = current;
                 }
             }
 
             return result;
+        }
+
+        private static IEnumerable<System.Collections.IEnumerator> GetEnumerators(this System.Collections.IEnumerable items,
+            IEnumerable<System.Collections.IEnumerable> others)
+        {
+            if (items != default)
+            {
+                yield return items.GetEnumerator();
+            }
+
+            foreach (var other in others.IfAny())
+            {
+                if (other != default)
+                {
+                    yield return other.GetEnumerator();
+                }
+            }
         }
 
         private static bool IsDefault<T>(this T item)

@@ -77,13 +77,15 @@ namespace EnumerableExtensionsTests
         [Test]
         public void Indexes()
         {
-            var values1 = GetWithDisposal(new object(), new object(), new object());
-            var values2 = Array.Empty<string>();
+            var values1 = GetWithDisposal(DateTime.Today, DateTime.Today.AddDays(1), DateTime.Today.AddDays(-11));
+            var values2 = Array.Empty<int>();
             var values3 = GetWithDisposal("a", "b", "c", "d");
+            var values4 = default(IEnumerable<object>);
 
             var indexes = values1.Indexes(
                 values2,
-                values3);
+                values3,
+                values4);
 
             var result = 0;
             foreach (var index in indexes)
