@@ -75,6 +75,26 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void Indexes()
+        {
+            var values1 = GetWithDisposal(3, 1, 2);
+            var values2 = Array.Empty<int>();
+            var values3 = GetWithDisposal(3, 1, 2, 1);
+
+            var indexes = values1.Indexes(
+                values2,
+                values3);
+
+            var result = 0;
+            foreach (var index in indexes)
+            {
+                result++;
+            }
+
+            Assert.True(result == 4);
+        }
+
+        [Test]
         public void MaxOrDefault()
         {
             var valuesDefaultInt = Array.Empty<int>();

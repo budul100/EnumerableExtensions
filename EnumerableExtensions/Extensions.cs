@@ -305,6 +305,16 @@ namespace EnumerableExtensions
             }
         }
 
+        public static IEnumerable<int> Indexes<T>(this IEnumerable<T> items, params IEnumerable<T>[] others)
+        {
+            var length = items.CountMax(others);
+
+            for (var index = 0; index < length; index++)
+            {
+                yield return index;
+            }
+        }
+
         public static T MaxOrDefault<T>(this IEnumerable<T> items)
         {
             var result = default(T);
@@ -576,6 +586,24 @@ namespace EnumerableExtensions
         #endregion Public Methods
 
         #region Private Methods
+
+        private static int CountMax<T>(this IEnumerable<T> items, params IEnumerable<T>[] others)
+        {
+            var result = items.AnyItem()
+                ? items.Count()
+                : 0;
+
+            foreach (var other in others.IfAny())
+            {
+                if (other.AnyItem()
+                    && other.Count() > result)
+                {
+                    result = other.Count();
+                }
+            }
+
+            return result;
+        }
 
         private static bool IsDefault<T>(this T item)
         {
