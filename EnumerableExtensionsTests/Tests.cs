@@ -77,9 +77,9 @@ namespace EnumerableExtensionsTests
         [Test]
         public void Indexes()
         {
-            var values1 = GetWithDisposal(3, 1, 2);
-            var values2 = Array.Empty<int>();
-            var values3 = GetWithDisposal(3, 1, 2, 1);
+            var values1 = GetWithDisposal(new object(), new object(), new object());
+            var values2 = Array.Empty<string>();
+            var values3 = GetWithDisposal("a", "b", "c", "d");
 
             var indexes = values1.Indexes(
                 values2,

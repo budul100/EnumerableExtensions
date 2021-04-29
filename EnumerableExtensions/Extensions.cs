@@ -305,7 +305,7 @@ namespace EnumerableExtensions
             }
         }
 
-        public static IEnumerable<int> Indexes<T>(this IEnumerable<T> items, params IEnumerable<T>[] others)
+        public static IEnumerable<int> Indexes(this IEnumerable<object> items, params IEnumerable<object>[] others)
         {
             var length = items.CountMax(others);
 
