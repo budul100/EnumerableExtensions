@@ -2,7 +2,7 @@
 
 namespace EnumerableExtensionsTests
 {
-    internal class DisposalClass
+    internal class Disposable
         : IDisposable
     {
         #region Private Fields
