@@ -13,6 +13,18 @@ namespace EnumerableExtensionsTests
         #region Public Methods
 
         [Test]
+        public void Count()
+        {
+            var values1 = GetWithDisposal(DateTime.Today);
+            var values2 = GetWithDisposal("a", "b", "c", "d");
+            var values3 = default(IEnumerable<object>);
+
+            Assert.True(values1.Count() == 1);
+            Assert.True(values2.Count() == 4);
+            Assert.True(values3.Count() == 0);
+        }
+
+        [Test]
         public void CountEqualsOrSingleFalse()
         {
             var values1 = GetWithDisposal(DateTime.Today, DateTime.Today.AddDays(1), DateTime.Today.AddDays(-11));

@@ -7,6 +7,19 @@ namespace EnumerableExtensions
     {
         #region Public Methods
 
+        public static int Count(this System.Collections.IEnumerable items)
+        {
+            var result = 0;
+
+            if (items != default)
+            {
+                var enumerator = items.GetEnumerator();
+                result = enumerator.Count();
+            }
+
+            return result;
+        }
+
         public static bool CountEqualsOrSingle(this System.Collections.IEnumerable items, params System.Collections.IEnumerable[] others)
         {
             var enumerators = items
