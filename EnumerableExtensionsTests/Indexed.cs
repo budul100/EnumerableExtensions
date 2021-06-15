@@ -8,7 +8,6 @@ namespace EnumerableExtensionsTests
 {
     internal class Indexed
         : Base
-
     {
         #region Public Methods
 
