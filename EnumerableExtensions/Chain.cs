@@ -95,7 +95,7 @@ namespace EnumerableExtensions
             }
         }
 
-        public static IEnumerable<T> WithoutLast<T>(this IEnumerable<T> items, int number = 1)
+        public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> items, int number = 1)
         {
             if (items != default)
             {

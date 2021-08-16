@@ -37,17 +37,17 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
-        public void WithoutLast()
+        public void SkipLast()
         {
-            var result = GetWithDisposal("a", "b", "c").WithoutLast(2);
+            var result = Extensions.SkipLast(GetWithDisposal("a", "b", "c"), 2);
 
             Assert.IsTrue(result.Count() == 1);
         }
 
         [Test]
-        public void WithoutLastTooMuch()
+        public void SkipLastTooMuch()
         {
-            var result = GetWithDisposal("a", "b", "c").WithoutLast(4);
+            var result = Extensions.SkipLast(GetWithDisposal("a", "b", "c"), 4);
 
             Assert.IsFalse(result.Any());
         }
