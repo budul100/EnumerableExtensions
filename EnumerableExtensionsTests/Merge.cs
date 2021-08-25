@@ -14,7 +14,25 @@ namespace EnumerableExtensionsTests
         {
             disposalCount = 0;
 
-            var result = GetWithDisposal<string>(default, default, default).Merge();
+            var result = GetWithDisposal<string>(
+                default,
+                default,
+                default).Merge();
+
+            Assert.IsTrue(result == default);
+
+            Assert.True(disposalCount == 1);
+        }
+
+        [Test]
+        public void MergeEmpty()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal(
+                default,
+                default,
+                "").Merge();
 
             Assert.IsTrue(result == default);
 

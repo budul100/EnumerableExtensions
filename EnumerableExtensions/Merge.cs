@@ -39,7 +39,8 @@ namespace EnumerableExtensions
             var result = default(string);
 
             var relevants = items
-                .Where(i => !i.IsDefault()).ToArray();
+                .Where(i => !i.IsDefault())
+                .Where(i => !string.IsNullOrWhiteSpace(i.ToString())).ToArray();
 
             if (relevants.Any())
             {
