@@ -53,6 +53,19 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void ToConsecutiveTriplesWithTooLess()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal("a", "b")
+                .ToConsecutiveTriples((x, y, z) => new { x, y, z }).ToArray();
+
+            Assert.IsTrue(result.Length == 2);
+
+            Assert.True(disposalCount == 1);
+        }
+
+        [Test]
         public void ToPairs()
         {
             disposalCount = 0;
@@ -74,6 +87,19 @@ namespace EnumerableExtensionsTests
                 .ToTriples((x, y, z) => new { x, y, z }).ToArray();
 
             Assert.IsTrue(result.Length == 2);
+
+            Assert.True(disposalCount == 1);
+        }
+
+        [Test]
+        public void ToTriplesWithTooLess()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal("a", "b")
+                .ToTriples((x, y, z) => new { x, y, z }).ToArray();
+
+            Assert.IsTrue(result.Length == 0);
 
             Assert.True(disposalCount == 1);
         }
