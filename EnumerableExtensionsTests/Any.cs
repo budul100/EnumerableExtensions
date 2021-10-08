@@ -1,8 +1,9 @@
 ﻿using EnumerableExtensions;
+using EnumerableExtensionsTests.Commons;
 using NUnit.Framework;
 using System.Linq;
 
-namespace EnumerableExtensionsTests.Commons
+namespace EnumerableExtensionsTests
 {
     internal class Any
         : Base
