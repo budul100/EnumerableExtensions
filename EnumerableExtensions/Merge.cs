@@ -12,13 +12,13 @@ namespace EnumerableExtensions
         {
             var result = items.Merge(
                 delimiter: delimiter,
-                leaveUnsorted: true);
+                preventSorting: true);
 
             return result;
         }
 
         public static string Merge<T, TProp>(this IEnumerable<T> items, Func<T, TProp> property, string delimiter = ",",
-            bool leaveUnsorted = false)
+            bool preventSorting = false)
         {
             var result = default(string);
 
@@ -28,23 +28,24 @@ namespace EnumerableExtensions
                     .Select(i => property?.Invoke(i)?.ToString())
                     .Merge(
                         delimiter: delimiter,
-                        leaveUnsorted: leaveUnsorted);
+                        preventSorting: preventSorting);
             }
 
             return result;
         }
 
-        public static string Merge<T>(this IEnumerable<T> items, string delimiter = ",", bool leaveUnsorted = false)
+        public static string Merge<T>(this IEnumerable<T> items, string delimiter = ",", bool preventSorting = false)
         {
             var result = default(string);
 
             var relevants = items
                 .Where(i => !i.IsDefault())
-                .Where(i => !string.IsNullOrWhiteSpace(i.ToString())).ToArray();
+                .Where(i => !string.IsNullOrWhiteSpace(i.ToString()))
+                .Distinct().ToArray();
 
             if (relevants.Any())
             {
-                if (leaveUnsorted)
+                if (!preventSorting)
                 {
                     relevants = relevants
                         .OrderBy(i => i.ToString()).ToArray();
