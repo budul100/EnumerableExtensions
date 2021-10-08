@@ -11,32 +11,6 @@ namespace EnumerableExtensionsTests
         #region Public Methods
 
         [Test]
-        public void Consecutive()
-        {
-            disposalCount = 0;
-
-            var result = GetWithDisposal("a", "b", "c")
-                .Consecutive((x, y) => new { x, y }).ToArray();
-
-            Assert.IsTrue(result.Count() == 3);
-
-            Assert.True(disposalCount == 1);
-        }
-
-        [Test]
-        public void Paired()
-        {
-            disposalCount = 0;
-
-            var result = GetWithDisposal("a", "b", "c")
-                .Paired((x, y) => new { x, y }).ToArray();
-
-            Assert.IsTrue(result.Count() == 2);
-
-            Assert.True(disposalCount == 1);
-        }
-
-        [Test]
         public void SkipLast()
         {
             var result = Extensions.SkipLast(GetWithDisposal("a", "b", "c"), 2);
@@ -50,6 +24,58 @@ namespace EnumerableExtensionsTests
             var result = Extensions.SkipLast(GetWithDisposal("a", "b", "c"), 4);
 
             Assert.IsFalse(result.Any());
+        }
+
+        [Test]
+        public void ToConsecutivePairs()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal("a", "b", "c")
+                .ToConsecutivePairs((x, y) => new { x, y }).ToArray();
+
+            Assert.IsTrue(result.Length == 3);
+
+            Assert.True(disposalCount == 1);
+        }
+
+        [Test]
+        public void ToConsecutiveTriples()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal("a", "b", "c", "d")
+                .ToConsecutiveTriples((x, y, z) => new { x, y, z }).ToArray();
+
+            Assert.IsTrue(result.Length == 4);
+
+            Assert.True(disposalCount == 1);
+        }
+
+        [Test]
+        public void ToPairs()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal("a", "b", "c")
+                .ToPairs((x, y) => new { x, y }).ToArray();
+
+            Assert.IsTrue(result.Length == 2);
+
+            Assert.True(disposalCount == 1);
+        }
+
+        [Test]
+        public void ToTriples()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal("a", "b", "c", "d")
+                .ToTriples((x, y, z) => new { x, y, z }).ToArray();
+
+            Assert.IsTrue(result.Length == 2);
+
+            Assert.True(disposalCount == 1);
         }
 
         #endregion Public Methods
