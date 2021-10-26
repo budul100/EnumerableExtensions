@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace EnumerableExtensions
@@ -45,12 +44,7 @@ namespace EnumerableExtensions
 
         public static IEnumerable<T> IfAnyNonDefault<T>(this IEnumerable<T> items)
         {
-            if (items == default)
-            {
-                throw new ArgumentNullException(nameof(items));
-            }
-
-            if (items.AnyItemNonDefault())
+            if (items?.AnyItemNonDefault() == true)
             {
                 foreach (var item in items)
                 {
