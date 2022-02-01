@@ -15,7 +15,7 @@ namespace EnumerableExtensionsTests
         {
             var result = Extensions.SkipLast(GetWithDisposal("a", "b", "c"), 2);
 
-            Assert.IsTrue(result.Count() == 1);
+            Assert.IsTrue(result.Single() == "a");
         }
 
         [Test]
@@ -24,6 +24,23 @@ namespace EnumerableExtensionsTests
             var result = Extensions.SkipLast(GetWithDisposal("a", "b", "c"), 4);
 
             Assert.IsFalse(result.Any());
+        }
+
+        [Test]
+        public void TakeLast()
+        {
+            var result = Extensions.TakeLast(GetWithDisposal("a", "b", "c"), 2);
+
+            Assert.IsTrue(result.First() == "b");
+            Assert.IsTrue(result.Last() == "c");
+        }
+
+        [Test]
+        public void TakeLastTooMuch()
+        {
+            var result = Extensions.TakeLast(GetWithDisposal("a", "b", "c"), 4);
+
+            Assert.IsTrue(result.Count() == 3);
         }
 
         [Test]
