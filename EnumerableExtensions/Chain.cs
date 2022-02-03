@@ -85,12 +85,9 @@ namespace EnumerableExtensions
                 {
                     while (enumerator.MoveNext())
                     {
-                        if (!previous.IsDefault())
-                        {
-                            yield return getter.Invoke(
-                                arg1: previous,
-                                arg2: enumerator.Current);
-                        }
+                        yield return getter.Invoke(
+                            arg1: previous,
+                            arg2: enumerator.Current);
 
                         previous = enumerator.Current;
                     }
@@ -118,13 +115,10 @@ namespace EnumerableExtensions
                 {
                     while (enumerator.MoveNext())
                     {
-                        if (!previous2.IsDefault())
-                        {
-                            yield return getter(
-                                arg1: previous2,
-                                arg2: previous1,
-                                arg3: enumerator.Current);
-                        }
+                        yield return getter(
+                            arg1: previous2,
+                            arg2: previous1,
+                            arg3: enumerator.Current);
 
                         previous2 = previous1;
                         previous1 = enumerator.Current;

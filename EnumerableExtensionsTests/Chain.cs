@@ -51,7 +51,7 @@ namespace EnumerableExtensionsTests
             var result = GetWithDisposal("a", "b", "c")
                 .ToConsecutivePairs((x, y) => new { x, y }).ToArray();
 
-            Assert.IsTrue(result.Length == 3);
+            Assert.IsTrue(result.Length == 4);
 
             Assert.True(disposalCount == 1);
         }
@@ -64,7 +64,7 @@ namespace EnumerableExtensionsTests
             var result = GetWithDisposal("a", "b", "c", "d")
                 .ToConsecutiveTriples((x, y, z) => new { x, y, z }).ToArray();
 
-            Assert.IsTrue(result.Length == 4);
+            Assert.IsTrue(result.Length == 6);
 
             Assert.True(disposalCount == 1);
         }
@@ -77,7 +77,7 @@ namespace EnumerableExtensionsTests
             var result = GetWithDisposal("a", "b")
                 .ToConsecutiveTriples((x, y, z) => new { x, y, z }).ToArray();
 
-            Assert.IsTrue(result.Length == 2);
+            Assert.IsTrue(result.Length == 4);
 
             Assert.True(disposalCount == 1);
         }
