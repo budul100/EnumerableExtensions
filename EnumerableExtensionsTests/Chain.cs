@@ -11,6 +11,16 @@ namespace EnumerableExtensionsTests
         #region Public Methods
 
         [Test]
+        public void DistinctSuccessiveNull()
+        {
+            var x = GetWithDisposal("a", "a", default, default, "a", "a");
+
+            var result = x.DistinctSuccessive();
+
+            Assert.IsTrue(result.Count() == 3);
+        }
+
+        [Test]
         public void SkipLast()
         {
             var result = Extensions.SkipLast(GetWithDisposal("a", "b", "c"), 2);

@@ -12,16 +12,12 @@ namespace EnumerableExtensions
         {
             if (items != default)
             {
-                bool equals(T left, T right) => comparer == default
-                  ? left.Equals(right)
-                  : comparer.Equals(left, right);
-
                 var first = true;
                 var prior = default(T);
 
                 foreach (var item in items)
                 {
-                    var isDifferent = first || !equals(
+                    var isDifferent = first || !comparer.Equals(
                         left: item,
                         right: prior);
 
@@ -208,5 +204,26 @@ namespace EnumerableExtensions
         }
 
         #endregion Public Methods
+
+        #region Private Methods
+
+        private static bool Equals<T>(this IEqualityComparer<T> comparer, T left, T right)
+        {
+            if ((left?.Equals(default) ?? true) || (right?.Equals(default) ?? true))
+            {
+                return (left?.Equals(default) ?? true)
+                    && (right?.Equals(default) ?? true);
+            }
+            else
+            {
+                return comparer == default
+                    ? left.Equals(right)
+                    : comparer.Equals(
+                        x: left,
+                        y: right);
+            }
+        }
+
+        #endregion Private Methods
     }
 }
