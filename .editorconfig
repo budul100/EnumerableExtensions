@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# RCS1227: Validate arguments correctly.
+dotnet_diagnostic.RCS1227.severity = silent

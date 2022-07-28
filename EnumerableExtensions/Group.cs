@@ -75,17 +75,11 @@ namespace EnumerableExtensions
                 throw new ArgumentNullException(nameof(predicate));
             }
 
-            var hasContent = false;
-
             foreach (var item in items.IfAny())
             {
-                if (hasContent || result.Count() == 0 || !predicate.Invoke(item))
-                {
-                    result.Add(item);
-                    hasContent = hasContent || !predicate.Invoke(item);
-                }
+                result.Add(item);
 
-                if (hasContent
+                if (result.Count() > 1
                     && predicate.Invoke(item))
                 {
                     yield return result;
@@ -94,12 +88,10 @@ namespace EnumerableExtensions
                     {
                         item
                     };
-
-                    hasContent = false;
                 }
             }
 
-            if (hasContent)
+            if (result.Count() > 1)
             {
                 yield return result;
             }

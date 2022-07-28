@@ -22,8 +22,9 @@ namespace EnumerableExtensionsTests
                 new TestObject(1))
                 .Chunked(v => v.Value1 == 1).ToArray();
 
-            Assert.IsTrue(result.Length == 1);
-            Assert.IsTrue(result[0].Count() == 3);
+            Assert.IsTrue(result.Length == 2);
+            Assert.IsTrue(result[0].Count() == 2);
+            Assert.IsTrue(result[1].Count() == 3);
 
             Assert.True(disposalCount == 1);
         }
@@ -42,9 +43,11 @@ namespace EnumerableExtensionsTests
                 new TestObject(2))
                 .Chunked(v => v.Value1 == 1).ToArray();
 
-            Assert.IsTrue(result.Length == 2);
-            Assert.IsTrue(result[0].Count() == 3);
-            Assert.IsTrue(result.Last().Count() == 2);
+            Assert.IsTrue(result.Length == 4);
+            Assert.IsTrue(result[0].Count() == 2);
+            Assert.IsTrue(result[1].Count() == 3);
+            Assert.IsTrue(result[2].Count() == 2);
+            Assert.IsTrue(result[2].Count() == 2);
 
             Assert.True(disposalCount == 1);
         }
@@ -63,9 +66,11 @@ namespace EnumerableExtensionsTests
                 new TestObject(1))
                 .Chunked(v => v.Value1 == 1).ToArray();
 
-            Assert.IsTrue(result.Length == 2);
+            Assert.IsTrue(result.Length == 4);
             Assert.IsTrue(result[0].Count() == 2);
-            Assert.IsTrue(result.Last().Count() == 3);
+            Assert.IsTrue(result[1].Count() == 2);
+            Assert.IsTrue(result[2].Count() == 2);
+            Assert.IsTrue(result[3].Count() == 3);
 
             Assert.True(disposalCount == 1);
         }
@@ -82,8 +87,9 @@ namespace EnumerableExtensionsTests
                 new TestObject(1))
                 .Framed(v => v.Value1 == 1).ToArray();
 
-            Assert.IsTrue(result.Length == 1);
-            Assert.IsTrue(result[0].Count() == 3);
+            Assert.IsTrue(result.Length == 2);
+            Assert.IsTrue(result[0].Count() == 2);
+            Assert.IsTrue(result[1].Count() == 3);
 
             Assert.True(disposalCount == 1);
         }
