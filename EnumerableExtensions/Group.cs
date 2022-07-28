@@ -65,42 +65,10 @@ namespace EnumerableExtensions
             }
         }
 
-        public static IEnumerable<IEnumerable<T>> Chunked<T>(this IEnumerable<T> items,
-            Func<T, bool> predicate)
-        {
-            var result = new List<T>();
-
-            if (predicate == default)
-            {
-                throw new ArgumentNullException(nameof(predicate));
-            }
-
-            foreach (var item in items.IfAny())
-            {
-                result.Add(item);
-
-                if (result.Count() > 1
-                    && predicate.Invoke(item))
-                {
-                    yield return result;
-
-                    result = new List<T>
-                    {
-                        item
-                    };
-                }
-            }
-
-            if (result.Count() > 1)
-            {
-                yield return result;
-            }
-        }
-
         public static IEnumerable<IEnumerable<T>> Framed<T>(this IEnumerable<T> items,
             Func<T, bool> predicate)
         {
-            var result = items.Chunked(predicate)
+            var result = items.SplitAt(predicate)
                 .Where(g => predicate.Invoke(g.First())
                     && predicate.Invoke(g.Last()));
 

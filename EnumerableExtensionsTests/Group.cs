@@ -11,71 +11,6 @@ namespace EnumerableExtensionsTests
         #region Public Methods
 
         [Test]
-        public void Chunked()
-        {
-            disposalCount = 0;
-
-            var result = GetWithDisposal(
-                new TestObject(1),
-                new TestObject(1),
-                new TestObject(2),
-                new TestObject(1))
-                .Chunked(v => v.Value1 == 1).ToArray();
-
-            Assert.IsTrue(result.Length == 2);
-            Assert.IsTrue(result[0].Count() == 2);
-            Assert.IsTrue(result[1].Count() == 3);
-
-            Assert.True(disposalCount == 1);
-        }
-
-        [Test]
-        public void ChunkedWithoutEnd()
-        {
-            disposalCount = 0;
-
-            var result = GetWithDisposal(
-                new TestObject(1),
-                new TestObject(1),
-                new TestObject(2),
-                new TestObject(1),
-                new TestObject(1),
-                new TestObject(2))
-                .Chunked(v => v.Value1 == 1).ToArray();
-
-            Assert.IsTrue(result.Length == 4);
-            Assert.IsTrue(result[0].Count() == 2);
-            Assert.IsTrue(result[1].Count() == 3);
-            Assert.IsTrue(result[2].Count() == 2);
-            Assert.IsTrue(result[2].Count() == 2);
-
-            Assert.True(disposalCount == 1);
-        }
-
-        [Test]
-        public void ChunkedWithoutStart()
-        {
-            disposalCount = 0;
-
-            var result = GetWithDisposal(
-                new TestObject(2),
-                new TestObject(1),
-                new TestObject(1),
-                new TestObject(1),
-                new TestObject(2),
-                new TestObject(1))
-                .Chunked(v => v.Value1 == 1).ToArray();
-
-            Assert.IsTrue(result.Length == 4);
-            Assert.IsTrue(result[0].Count() == 2);
-            Assert.IsTrue(result[1].Count() == 2);
-            Assert.IsTrue(result[2].Count() == 2);
-            Assert.IsTrue(result[3].Count() == 3);
-
-            Assert.True(disposalCount == 1);
-        }
-
-        [Test]
         public void Framed()
         {
             disposalCount = 0;
@@ -125,6 +60,48 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void SpliAt()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal(
+                new TestObject(1),
+                new TestObject(1),
+                new TestObject(2),
+                new TestObject(1))
+                .SplitAt(v => v.Value1 == 1).ToArray();
+
+            Assert.IsTrue(result.Length == 2);
+            Assert.IsTrue(result[0].Count() == 2);
+            Assert.IsTrue(result[1].Count() == 3);
+
+            Assert.True(disposalCount == 1);
+        }
+
+        [Test]
+        public void SpliAtWithoutStart()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal(
+                new TestObject(2),
+                new TestObject(1),
+                new TestObject(1),
+                new TestObject(1),
+                new TestObject(2),
+                new TestObject(1))
+                .SplitAt(v => v.Value1 == 1).ToArray();
+
+            Assert.IsTrue(result.Length == 4);
+            Assert.IsTrue(result[0].Count() == 2);
+            Assert.IsTrue(result[1].Count() == 2);
+            Assert.IsTrue(result[2].Count() == 2);
+            Assert.IsTrue(result[3].Count() == 3);
+
+            Assert.True(disposalCount == 1);
+        }
+
+        [Test]
         public void SplitAtChange()
         {
             disposalCount = 0;
@@ -137,6 +114,29 @@ namespace EnumerableExtensionsTests
                 .SplitAtChange(v => v.Value1).ToArray();
 
             Assert.IsTrue(result.Length == 3);
+
+            Assert.True(disposalCount == 1);
+        }
+
+        [Test]
+        public void SplitAtWithoutEnd()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal(
+                new TestObject(1),
+                new TestObject(1),
+                new TestObject(2),
+                new TestObject(1),
+                new TestObject(1),
+                new TestObject(2))
+                .SplitAt(v => v.Value1 == 1).ToArray();
+
+            Assert.IsTrue(result.Length == 4);
+            Assert.IsTrue(result[0].Count() == 2);
+            Assert.IsTrue(result[1].Count() == 3);
+            Assert.IsTrue(result[2].Count() == 2);
+            Assert.IsTrue(result[2].Count() == 2);
 
             Assert.True(disposalCount == 1);
         }
