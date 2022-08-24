@@ -8,17 +8,18 @@ namespace EnumerableExtensions
     {
         #region Public Methods
 
-        public static string Merge(string delimiter, params string[] items)
+        public static string Merge(this string delimiter, params string[] items)
         {
             var result = items.Merge(
                 delimiter: delimiter,
-                preventSorting: true);
+                preventDistinct: true,
+                preventSort: true);
 
             return result;
         }
 
         public static string Merge<T, TProp>(this IEnumerable<T> items, Func<T, TProp> property, string delimiter = ",",
-            bool preventSorting = false)
+            bool preventDistinct = false, bool preventSort = false)
         {
             var result = default(string);
 
@@ -28,24 +29,31 @@ namespace EnumerableExtensions
                     .Select(i => property?.Invoke(i)?.ToString())
                     .Merge(
                         delimiter: delimiter,
-                        preventSorting: preventSorting);
+                        preventDistinct: preventDistinct,
+                        preventSort: preventSort);
             }
 
             return result;
         }
 
-        public static string Merge<T>(this IEnumerable<T> items, string delimiter = ",", bool preventSorting = false)
+        public static string Merge<T>(this IEnumerable<T> items, string delimiter = ",", bool preventDistinct = false,
+            bool preventSort = false)
         {
             var result = default(string);
 
             var relevants = items
-                .Where(i => !i.IsDefault())
-                .Where(i => !string.IsNullOrWhiteSpace(i.ToString()))
-                .Distinct().ToArray();
+                .Where(i => !i.IsDefault()
+                    && !string.IsNullOrWhiteSpace(i.ToString())).ToArray();
 
-            if (relevants.Any())
+            if (!preventDistinct)
             {
-                if (!preventSorting)
+                relevants = relevants
+                    .Distinct().ToArray();
+            }
+
+            if (relevants.Count() > 0)
+            {
+                if (!preventSort)
                 {
                     relevants = relevants
                         .OrderBy(i => i.ToString()).ToArray();

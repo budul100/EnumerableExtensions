@@ -85,6 +85,21 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void MergeUndistincted()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal(
+                "c",
+                "b",
+                "c").Merge(preventDistinct: true);
+
+            Assert.IsTrue(result == "b,c,c");
+
+            Assert.True(disposalCount == 1);
+        }
+
+        [Test]
         public void MergeUnsorted()
         {
             disposalCount = 0;
@@ -92,7 +107,7 @@ namespace EnumerableExtensionsTests
             var result = GetWithDisposal(
                 "c",
                 "b",
-                "a").Merge(preventSorting: true);
+                "a").Merge(preventSort: true);
 
             Assert.IsTrue(result == "c,b,a");
 

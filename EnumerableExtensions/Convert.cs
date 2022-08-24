@@ -15,7 +15,21 @@ namespace EnumerableExtensions
             return result;
         }
 
-        public static T[] AsArrayOrDefault<T>(this IEnumerable<T> items)
+        public static IEnumerable<T> AsEnumerable<T>(this T value)
+        {
+            var result = new T[] { value };
+
+            return result;
+        }
+
+        public static List<T> AsList<T>(this T value)
+        {
+            var result = new List<T> { value };
+
+            return result;
+        }
+
+        public static T[] ToArrayOrDefault<T>(this IEnumerable<T> items)
         {
             var result = items?.ToArray();
 
@@ -27,7 +41,7 @@ namespace EnumerableExtensions
             return result;
         }
 
-        public static IDictionary<TKey, IEnumerable<T>> AsDictionary<T, TKey>(this IEnumerable<T> items, Func<T, TKey> keyGetter)
+        public static IDictionary<TKey, IEnumerable<T>> ToGroupedDictionary<T, TKey>(this IEnumerable<T> items, Func<T, TKey> keyGetter)
         {
             if (keyGetter == default)
             {
@@ -49,21 +63,7 @@ namespace EnumerableExtensions
             return result;
         }
 
-        public static IEnumerable<T> AsEnumerable<T>(this T value)
-        {
-            var result = new T[] { value };
-
-            return result;
-        }
-
-        public static List<T> AsList<T>(this T value)
-        {
-            var result = new List<T> { value };
-
-            return result;
-        }
-
-        public static List<T> AsListOrDefault<T>(this IEnumerable<T> items)
+        public static List<T> ToListOrDefault<T>(this IEnumerable<T> items)
         {
             var result = items?.ToList();
 
