@@ -41,7 +41,8 @@ namespace EnumerableExtensions
             return result;
         }
 
-        public static IDictionary<TKey, IEnumerable<T>> ToGroupedDictionary<T, TKey>(this IEnumerable<T> items, Func<T, TKey> keyGetter)
+        public static IDictionary<TKey, IEnumerable<T>> ToGroupedDictionary<T, TKey>(this IEnumerable<T> items,
+            Func<T, TKey> keyGetter)
         {
             if (keyGetter == default)
             {

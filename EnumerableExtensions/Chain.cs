@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace EnumerableExtensions
 {
@@ -26,42 +25,6 @@ namespace EnumerableExtensions
 
                     first = false;
                     prior = item;
-                }
-            }
-        }
-
-        public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> items, int number = 1)
-        {
-            if (items != default)
-            {
-                var length = items.Count();
-
-                if (number > length)
-                {
-                    number = length;
-                }
-
-                for (int index = 0; index < length - number; index++)
-                {
-                    yield return items.ElementAt(index);
-                }
-            }
-        }
-
-        public static IEnumerable<T> TakeLast<T>(this IEnumerable<T> items, int number = 1)
-        {
-            if (items != default)
-            {
-                var length = items.Count();
-
-                if (number > length)
-                {
-                    number = length;
-                }
-
-                for (int index = length - number; index < length; index++)
-                {
-                    yield return items.ElementAt(index);
                 }
             }
         }

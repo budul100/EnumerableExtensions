@@ -20,7 +20,8 @@ namespace EnumerableExtensions
             return result;
         }
 
-        public static bool CountEqualsOrSingle(this System.Collections.IEnumerable items, params System.Collections.IEnumerable[] others)
+        public static bool CountEqualsOrSingle(this System.Collections.IEnumerable items,
+            params System.Collections.IEnumerable[] others)
         {
             var enumerators = items
                 .GetEnumerators(others).ToArray();
