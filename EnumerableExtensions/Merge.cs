@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace EnumerableExtensions
 {
@@ -42,8 +43,9 @@ namespace EnumerableExtensions
             var result = default(string);
 
             var relevants = items
-                .Where(i => !i.IsDefault()
-                    && !string.IsNullOrWhiteSpace(i.ToString())).ToArray();
+                .Where(i => !i.IsDefault())
+                .Select(i => i.ToString())
+                .Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
 
             if (!preventDistinct)
             {
@@ -56,12 +58,23 @@ namespace EnumerableExtensions
                 if (!preventSort)
                 {
                     relevants = relevants
-                        .OrderBy(i => i.ToString()).ToArray();
+                        .OrderBy(t => t).ToArray();
                 }
 
-                result = string.Join(
-                    separator: delimiter,
-                    values: relevants);
+                var text = new StringBuilder();
+
+                foreach (var relevant in relevants)
+                {
+                    if (!string.IsNullOrEmpty(delimiter)
+                        && text.Length > 0)
+                    {
+                        text.Append(delimiter);
+                    }
+
+                    text.Append(relevant);
+                }
+
+                result = text.ToString();
             }
 
             return result;
