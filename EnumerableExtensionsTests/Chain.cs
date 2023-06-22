@@ -11,6 +11,19 @@ namespace EnumerableExtensionsTests
         #region Public Methods
 
         [Test]
+        public void DistinctSuccessive()
+        {
+            var a = new object();
+            var b = new object();
+
+            var x = GetWithDisposal(b, b, a, a, b, b);
+
+            var result = x.DistinctSuccessive();
+
+            Assert.IsTrue(result.Count() == 3);
+        }
+
+        [Test]
         public void DistinctSuccessiveNull()
         {
             var x = GetWithDisposal("a", "a", default, default, "a", "a");
