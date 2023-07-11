@@ -79,6 +79,21 @@ namespace EnumerableExtensionsTests
         }
 
         [Test]
+        public void SpliAtSingle()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal(
+                new TestObject(2))
+                .SplitAt(v => v.Value1 == 1).ToArray();
+
+            Assert.IsTrue(result.Length == 1);
+            Assert.IsTrue(result[0].Count() == 1);
+
+            Assert.True(disposalCount == 1);
+        }
+
+        [Test]
         public void SpliAtWithoutStart()
         {
             disposalCount = 0;

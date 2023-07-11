@@ -91,12 +91,13 @@ namespace EnumerableExtensions
 
         public static IEnumerable<IEnumerable<T>> SplitAt<T>(this IEnumerable<T> items, Func<T, bool> predicate)
         {
-            var result = new List<T>();
-
             if (predicate == default)
             {
                 throw new ArgumentNullException(nameof(predicate));
             }
+
+            var result = new List<T>();
+            var anyFound = false;
 
             foreach (var item in items.IfAny())
             {
@@ -108,13 +109,16 @@ namespace EnumerableExtensions
                     yield return result;
 
                     result = new List<T>
-                        {
-                            item
-                        };
+                    {
+                        item
+                    };
+
+                    anyFound = true;
                 }
             }
 
-            if (result.Count > 1)
+            if (result.Count > 1
+                || (!anyFound && result.AnyItem()))
             {
                 yield return result;
             }
@@ -123,13 +127,12 @@ namespace EnumerableExtensions
         public static IEnumerable<IEnumerable<T>> SplitAtChange<T, TProperty>(this IEnumerable<T> items,
             Func<T, TProperty> property)
         {
-            var result = new List<T>();
-
             if (property == default)
             {
                 throw new ArgumentNullException(nameof(property));
             }
 
+            var result = new List<T>();
             var last = default(TProperty);
 
             foreach (var item in items.IfAny())
