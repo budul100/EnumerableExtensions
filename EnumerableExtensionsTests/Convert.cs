@@ -1,58 +1,58 @@
-﻿using EnumerableExtensions;
-using EnumerableExtensionsTests.Commons;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using EnumerableExtensions;
+using EnumerableExtensionsTests.Commons;
+using Xunit;
 
 namespace EnumerableExtensionsTests
 {
-    internal class Convert
+    public class Convert
         : Base
     {
         #region Public Methods
 
-        [Test]
+        [Fact]
         public void ToArrayOrDefault()
         {
             var valuesDefault = default(IEnumerable<TestObject>);
             var valuesEmpty = Array.Empty<TestObject>();
             var valuesNonDefault = new TestObject[] { default, default };
 
-            Assert.IsTrue(valuesDefault.ToArrayOrDefault() == default);
-            Assert.IsTrue(valuesEmpty.ToArrayOrDefault() == default);
-            Assert.IsFalse(valuesNonDefault.ToArrayOrDefault() == default);
+            Assert.True(valuesDefault.ToArrayOrDefault() == default);
+            Assert.True(valuesEmpty.ToArrayOrDefault() == default);
+            Assert.False(valuesNonDefault.ToArrayOrDefault() == default);
         }
 
-        [Test]
+        [Fact]
         public void ToArrayOrDefaultWithDisposal()
         {
             disposalCount = 0;
 
             GetWithDisposal("a", "b", "c").ToArrayOrDefault();
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void ToListOrDefault()
         {
             var valuesDefault = default(IEnumerable<TestObject>);
             var valuesEmpty = Array.Empty<TestObject>();
             var valuesNonDefault = new TestObject[] { default, default };
 
-            Assert.IsTrue(valuesDefault.ToListOrDefault() == default);
-            Assert.IsTrue(valuesEmpty.ToListOrDefault() == default);
-            Assert.IsFalse(valuesNonDefault.ToListOrDefault() == default);
+            Assert.True(valuesDefault.ToListOrDefault() == default);
+            Assert.True(valuesEmpty.ToListOrDefault() == default);
+            Assert.False(valuesNonDefault.ToListOrDefault() == default);
         }
 
-        [Test]
+        [Fact]
         public void ToListOrDefaultWithDisposal()
         {
             disposalCount = 0;
 
             GetWithDisposal("a", "b", "c").ToListOrDefault();
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
         #endregion Public Methods

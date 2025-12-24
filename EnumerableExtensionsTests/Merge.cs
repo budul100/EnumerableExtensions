@@ -1,15 +1,15 @@
 ﻿using EnumerableExtensions;
 using EnumerableExtensionsTests.Commons;
-using NUnit.Framework;
+using Xunit;
 
 namespace EnumerableExtensionsTests
 {
-    internal class Merge
+    public class Merge
         : Base
     {
         #region Public Methods
 
-        [Test]
+        [Fact]
         public void MergeDefault()
         {
             disposalCount = 0;
@@ -19,12 +19,12 @@ namespace EnumerableExtensionsTests
                 default,
                 default).Merge();
 
-            Assert.IsTrue(result == default);
+            Assert.True(result == default);
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void MergeDistincted()
         {
             disposalCount = 0;
@@ -34,12 +34,12 @@ namespace EnumerableExtensionsTests
                 "b",
                 "c").Merge();
 
-            Assert.IsTrue(result == "b,c");
+            Assert.Equal("b,c", result);
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void MergeEmpty()
         {
             disposalCount = 0;
@@ -49,12 +49,12 @@ namespace EnumerableExtensionsTests
                 default,
                 "").Merge();
 
-            Assert.IsTrue(result == default);
+            Assert.True(result == default);
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void MergeNonDefault()
         {
             disposalCount = 0;
@@ -64,12 +64,12 @@ namespace EnumerableExtensionsTests
                 default,
                 "c").Merge();
 
-            Assert.IsTrue(result != default);
+            Assert.True(result != default);
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void MergeSorted()
         {
             disposalCount = 0;
@@ -79,12 +79,12 @@ namespace EnumerableExtensionsTests
                 "b",
                 "a").Merge();
 
-            Assert.IsTrue(result == "a,b,c");
+            Assert.Equal("a,b,c", result);
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void MergeUndistincted()
         {
             disposalCount = 0;
@@ -94,12 +94,12 @@ namespace EnumerableExtensionsTests
                 "b",
                 "c").Merge(preventDistinct: true);
 
-            Assert.IsTrue(result == "b,c,c");
+            Assert.Equal("b,c,c", result);
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void MergeUnsorted()
         {
             disposalCount = 0;
@@ -109,9 +109,9 @@ namespace EnumerableExtensionsTests
                 "b",
                 "a").Merge(preventSort: true);
 
-            Assert.IsTrue(result == "c,b,a");
+            Assert.Equal("c,b,a", result);
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
         #endregion Public Methods

@@ -1,22 +1,22 @@
-﻿using EnumerableExtensions;
+﻿using System;
+using EnumerableExtensions;
 using EnumerableExtensionsTests.Commons;
-using NUnit.Framework;
-using System;
+using Xunit;
 
 namespace EnumerableExtensionsTests
 {
-    internal class Compare
+    public class Compare
         : Base
     {
         #region Public Methods
 
-        [Test]
+        [Fact]
         public void ContainsOrEmpty()
         {
             var element = new TestObject(1);
 
-            Assert.IsTrue(GetWithDisposal(default, element, default).ContainsOrEmpty(element));
-            Assert.IsTrue(Array.Empty<TestObject>().ContainsOrEmpty(element));
+            Assert.True(GetWithDisposal(default, element, default).ContainsOrEmpty(element));
+            Assert.True(Array.Empty<TestObject>().ContainsOrEmpty(element));
         }
 
         #endregion Public Methods

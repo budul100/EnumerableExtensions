@@ -1,29 +1,29 @@
-﻿using EnumerableExtensions;
-using EnumerableExtensionsTests.Commons;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using EnumerableExtensions;
+using EnumerableExtensionsTests.Commons;
+using Xunit;
 
 namespace EnumerableExtensionsTests
 {
-    internal class Indexed
+    public class Indexed
         : Base
     {
         #region Public Methods
 
-        [Test]
+        [Fact]
         public void Count()
         {
             var values1 = GetWithDisposal(DateTime.Today);
             var values2 = GetWithDisposal("a", "b", "c", "d");
             var values3 = default(IEnumerable<object>);
 
-            Assert.True(values1.Count() == 1);
-            Assert.True(values2.Count() == 4);
-            Assert.True(values3.Count() == 0);
+            Assert.Equal(1, values1.Count());
+            Assert.Equal(4, values2.Count());
+            Assert.Equal(0, values3.Count());
         }
 
-        [Test]
+        [Fact]
         public void CountEqualsOrSingleFalse()
         {
             var values1 = GetWithDisposal(DateTime.Today, DateTime.Today.AddDays(1), DateTime.Today.AddDays(-11));
@@ -39,7 +39,7 @@ namespace EnumerableExtensionsTests
             Assert.False(result);
         }
 
-        [Test]
+        [Fact]
         public void CountEqualsOrSingleTrue()
         {
             var values1 = GetWithDisposal(DateTime.Today);
@@ -55,7 +55,7 @@ namespace EnumerableExtensionsTests
             Assert.True(result);
         }
 
-        [Test]
+        [Fact]
         public void Indexes()
         {
             var values1 = GetWithDisposal(DateTime.Today, DateTime.Today.AddDays(1), DateTime.Today.AddDays(-11));
@@ -74,7 +74,7 @@ namespace EnumerableExtensionsTests
                 result++;
             }
 
-            Assert.True(result == 4);
+            Assert.Equal(4, result);
         }
 
         #endregion Public Methods

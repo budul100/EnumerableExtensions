@@ -1,62 +1,62 @@
-﻿using EnumerableExtensions;
+﻿using System.Linq;
+using EnumerableExtensions;
 using EnumerableExtensionsTests.Commons;
-using NUnit.Framework;
-using System.Linq;
+using Xunit;
 
 namespace EnumerableExtensionsTests
 {
-    internal class Any
+    public class Any
         : Base
     {
         #region Public Methods
 
-        [Test]
+        [Fact]
         public void AnyNonDefaultFalse()
         {
             disposalCount = 0;
 
-            Assert.IsFalse(GetWithDisposal<TestObject>(
+            Assert.False(GetWithDisposal<TestObject>(
                 default,
                 default,
                 default).AnyItemNonDefault());
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void AnyNonDefaultTrue()
         {
             disposalCount = 0;
 
-            Assert.IsTrue(GetWithDisposal(
+            Assert.True(GetWithDisposal(
                 default,
                 new TestObject(1),
                 default).AnyItemNonDefault());
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void IfAny()
         {
             TestParent[] values = default;
             var result = values.IfAny()
                 .SelectMany(t => t.TestObjects).IfAny();
 
-            Assert.IsFalse(result.Any());
+            Assert.False(result.Any());
         }
 
-        [Test]
+        [Fact]
         public void NonDefaults()
         {
             disposalCount = 0;
 
-            Assert.IsTrue(GetWithDisposal(
+            Assert.Single(GetWithDisposal(
                 default,
                 new TestObject(1),
-                default).NonDefaults().Count() == 1);
+                default).NonDefaults());
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
         #endregion Public Methods

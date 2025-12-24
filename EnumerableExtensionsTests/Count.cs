@@ -1,57 +1,57 @@
-﻿using EnumerableExtensions;
+﻿using System;
+using EnumerableExtensions;
 using EnumerableExtensionsTests.Commons;
-using NUnit.Framework;
-using System;
+using Xunit;
 
 namespace EnumerableExtensionsTests
 {
-    internal class Count
+    public class Count
         : Base
     {
         #region Public Methods
 
-        [Test]
+        [Fact]
         public void MaxOrDefault()
         {
             var valuesDefaultInt = Array.Empty<int>();
             var valuesDefaultDateTime = Array.Empty<DateTime>();
 
-            Assert.IsTrue(valuesDefaultInt.MaxOrDefault() == default);
-            Assert.IsTrue(valuesDefaultDateTime.MaxOrDefault() == default);
-            Assert.IsTrue(GetWithDisposal(3, 1, 2).MaxOrDefault() == 3);
+            Assert.True(valuesDefaultInt.MaxOrDefault() == default);
+            Assert.True(valuesDefaultDateTime.MaxOrDefault() == default);
+            Assert.Equal(3, GetWithDisposal(3, 1, 2).MaxOrDefault());
         }
 
-        [Test]
+        [Fact]
         public void MaxOrNull()
         {
             var valuesDefaultInt = Array.Empty<int>();
             var valuesDefaultDateTime = Array.Empty<DateTime>();
 
-            Assert.IsTrue(valuesDefaultInt.MaxOrNull() == default);
-            Assert.IsTrue(valuesDefaultDateTime.MaxOrNull() == default);
-            Assert.IsTrue(GetWithDisposal(3, 1, 2).MaxOrNull() == 3);
+            Assert.True(valuesDefaultInt.MaxOrNull() == default);
+            Assert.True(valuesDefaultDateTime.MaxOrNull() == default);
+            Assert.Equal(3, GetWithDisposal(3, 1, 2).MaxOrNull());
         }
 
-        [Test]
+        [Fact]
         public void MinOrDefault()
         {
             var valuesDefaultInt = Array.Empty<int>();
             var valuesDefaultDateTime = Array.Empty<DateTime>();
 
-            Assert.IsTrue(valuesDefaultInt.MinOrDefault() == default);
-            Assert.IsTrue(valuesDefaultDateTime.MinOrDefault() == default);
-            Assert.IsTrue(GetWithDisposal(3, 1, 2).MinOrDefault() == 1);
+            Assert.True(valuesDefaultInt.MinOrDefault() == default);
+            Assert.True(valuesDefaultDateTime.MinOrDefault() == default);
+            Assert.Equal(1, GetWithDisposal(3, 1, 2).MinOrDefault());
         }
 
-        [Test]
+        [Fact]
         public void MinOrNull()
         {
             var valuesDefaultInt = Array.Empty<int>();
             var valuesDefaultDateTime = Array.Empty<DateTime>();
 
-            Assert.IsTrue(valuesDefaultInt.MinOrNull() == default);
-            Assert.IsTrue(valuesDefaultDateTime.MinOrNull() == default);
-            Assert.IsTrue(GetWithDisposal(3, 1, 2).MinOrNull() == 1);
+            Assert.True(valuesDefaultInt.MinOrNull() == default);
+            Assert.True(valuesDefaultDateTime.MinOrNull() == default);
+            Assert.Equal(1, GetWithDisposal(3, 1, 2).MinOrNull());
         }
 
         #endregion Public Methods

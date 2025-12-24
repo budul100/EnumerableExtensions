@@ -1,16 +1,16 @@
+using System.Linq;
 using EnumerableExtensions;
 using EnumerableExtensionsTests.Commons;
-using NUnit.Framework;
-using System.Linq;
+using Xunit;
 
 namespace EnumerableExtensionsTests
 {
-    internal class Group
+    public class Group
         : Base
     {
         #region Public Methods
 
-        [Test]
+        [Fact]
         public void Framed()
         {
             disposalCount = 0;
@@ -22,14 +22,14 @@ namespace EnumerableExtensionsTests
                 new TestObject(1))
                 .Framed(v => v.Value1 == 1).ToArray();
 
-            Assert.IsTrue(result.Length == 2);
-            Assert.IsTrue(result[0].Count() == 2);
-            Assert.IsTrue(result[1].Count() == 3);
+            Assert.Equal(2, result.Length);
+            Assert.Equal(2, result[0].Count());
+            Assert.Equal(3, result[1].Count());
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void FramedWithoutEnd()
         {
             disposalCount = 0;
@@ -39,12 +39,12 @@ namespace EnumerableExtensionsTests
                 new TestObject(2))
                 .Framed(v => v.Value1 == 1).ToArray();
 
-            Assert.IsTrue(result.Length == 0);
+            Assert.Empty(result);
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void FramedWithoutStart()
         {
             disposalCount = 0;
@@ -54,12 +54,12 @@ namespace EnumerableExtensionsTests
                 new TestObject(1))
                 .Framed(v => v.Value1 == 1).ToArray();
 
-            Assert.IsTrue(result.Length == 0);
+            Assert.Empty(result);
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void SpliAt()
         {
             disposalCount = 0;
@@ -71,14 +71,14 @@ namespace EnumerableExtensionsTests
                 new TestObject(1))
                 .SplitAt(v => v.Value1 == 1).ToArray();
 
-            Assert.IsTrue(result.Length == 2);
-            Assert.IsTrue(result[0].Count() == 2);
-            Assert.IsTrue(result[1].Count() == 3);
+            Assert.Equal(2, result.Length);
+            Assert.Equal(2, result[0].Count());
+            Assert.Equal(3, result[1].Count());
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void SpliAtSingle()
         {
             disposalCount = 0;
@@ -87,13 +87,13 @@ namespace EnumerableExtensionsTests
                 new TestObject(2))
                 .SplitAt(v => v.Value1 == 1).ToArray();
 
-            Assert.IsTrue(result.Length == 1);
-            Assert.IsTrue(result[0].Count() == 1);
+            Assert.Single(result);
+            Assert.Single(result[0]);
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void SpliAtWithoutStart()
         {
             disposalCount = 0;
@@ -107,16 +107,16 @@ namespace EnumerableExtensionsTests
                 new TestObject(1))
                 .SplitAt(v => v.Value1 == 1).ToArray();
 
-            Assert.IsTrue(result.Length == 4);
-            Assert.IsTrue(result[0].Count() == 2);
-            Assert.IsTrue(result[1].Count() == 2);
-            Assert.IsTrue(result[2].Count() == 2);
-            Assert.IsTrue(result[3].Count() == 3);
+            Assert.Equal(4, result.Length);
+            Assert.Equal(2, result[0].Count());
+            Assert.Equal(2, result[1].Count());
+            Assert.Equal(2, result[2].Count());
+            Assert.Equal(3, result[3].Count());
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void SplitAtChange()
         {
             disposalCount = 0;
@@ -128,12 +128,12 @@ namespace EnumerableExtensionsTests
                 new TestObject(1))
                 .SplitAtChange(v => v.Value1).ToArray();
 
-            Assert.IsTrue(result.Length == 3);
+            Assert.Equal(3, result.Length);
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
-        [Test]
+        [Fact]
         public void SplitAtWithoutEnd()
         {
             disposalCount = 0;
@@ -147,13 +147,13 @@ namespace EnumerableExtensionsTests
                 new TestObject(2))
                 .SplitAt(v => v.Value1 == 1).ToArray();
 
-            Assert.IsTrue(result.Length == 4);
-            Assert.IsTrue(result[0].Count() == 2);
-            Assert.IsTrue(result[1].Count() == 3);
-            Assert.IsTrue(result[2].Count() == 2);
-            Assert.IsTrue(result[2].Count() == 2);
+            Assert.Equal(4, result.Length);
+            Assert.Equal(2, result[0].Count());
+            Assert.Equal(3, result[1].Count());
+            Assert.Equal(2, result[2].Count());
+            Assert.Equal(2, result[2].Count());
 
-            Assert.True(disposalCount == 1);
+            Assert.Equal(1, disposalCount);
         }
 
         #endregion Public Methods
