@@ -17,20 +17,16 @@ namespace EnumerableExtensionsTests.Commons
         {
             disposalCount++;
 
-            if (datas == default)
+            ArgumentNullException.ThrowIfNull(datas);
+
+            using var disposalClass = new Disposable();
+
+            foreach (var data in datas)
             {
-                throw new ArgumentNullException(nameof(datas));
+                yield return data;
             }
 
-            using (var disposalClass = new Disposable())
-            {
-                foreach (var data in datas)
-                {
-                    yield return data;
-                }
-
-                disposalClass.CanBeDisposed();
-            }
+            disposalClass.CanBeDisposed();
         }
 
         #endregion Protected Methods
@@ -58,20 +54,11 @@ namespace EnumerableExtensionsTests.Commons
             #endregion Public Properties
         }
 
-        protected class TestParent
+        protected class TestParent(IEnumerable<Base.TestObject> testObjects)
         {
-            #region Public Constructors
-
-            public TestParent(IEnumerable<TestObject> testObjects)
-            {
-                TestObjects = testObjects;
-            }
-
-            #endregion Public Constructors
-
             #region Public Properties
 
-            public IEnumerable<TestObject> TestObjects { get; set; }
+            public IEnumerable<TestObject> TestObjects { get; set; } = testObjects;
 
             #endregion Public Properties
         }
