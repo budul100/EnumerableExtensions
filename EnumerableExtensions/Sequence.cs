@@ -8,7 +8,7 @@ namespace EnumerableExtensions
     {
         #region Public Methods
 
-        // <summary>
+        /// <summary>
         /// Searches for the sequence within the master track and returns a dictionary
         /// mapping every involved master index to the corresponding input object.
         /// </summary>
@@ -18,7 +18,6 @@ namespace EnumerableExtensions
         /// </returns>
         public static Dictionary<int, TSearchItem> MapSequence<TMasterItem, TSearchItem>(this IEnumerable<TMasterItem> master,
             IEnumerable<TSearchItem> sequence, Func<TSearchItem, TMasterItem> selector)
-            where TMasterItem : IEquatable<TMasterItem>
         {
             if (master is null)
             {
