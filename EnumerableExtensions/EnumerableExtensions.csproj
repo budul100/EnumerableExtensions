@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
 		<AssemblyName>EnumerableExtensions</AssemblyName>
-		<Version>2.0.0</Version>
+		<Version>2.1.0</Version>
 		<FileVersion>$(Version)</FileVersion>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<Authors>budul</Authors>
