@@ -68,4 +68,4 @@ int count = items.CountOrDefault(); // 4
 
 ## License
 
-This project is licensed under the MIT License.
+MIT

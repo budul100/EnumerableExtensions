@@ -1,22 +1,23 @@
-namespace EnumerableExtensionsTests.Commons;
-
-internal sealed class TestObject
+namespace EnumerableExtensionsTests.Commons
 {
-    #region Public Constructors
-
-    public TestObject()
-    { }
-
-    public TestObject(int value1)
+    internal sealed class TestObject
     {
-        Value1 = value1;
+        #region Public Constructors
+
+        public TestObject()
+        { }
+
+        public TestObject(int value1)
+        {
+            Value1 = value1;
+        }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public int Value1 { get; set; }
+
+        #endregion Public Properties
     }
-
-    #endregion Public Constructors
-
-    #region Public Properties
-
-    public int Value1 { get; set; }
-
-    #endregion Public Properties
 }
