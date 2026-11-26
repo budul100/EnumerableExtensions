@@ -1,39 +1,38 @@
 using System;
 using System.Collections.Generic;
 
-namespace EnumerableExtensionsTests.Commons
+namespace EnumerableExtensionsTests.Commons;
+
+public abstract class Base
 {
-    public abstract class Base
+    #region Protected Fields
+
+    /// <summary>
+    /// Number of enumerations of GetWithDisposal which were disposed (completed or abandoned).
+    /// An enumeration which is never disposed does not count.
+    /// </summary>
+    protected int disposalCount;
+
+    #endregion Protected Fields
+
+    #region Protected Methods
+
+    protected IEnumerable<T> GetWithDisposal<T>(params T[] datas)
     {
-        #region Protected Fields
+        ArgumentNullException.ThrowIfNull(datas);
 
-        /// <summary>
-        /// Number of enumerations of GetWithDisposal which were disposed (completed or abandoned).
-        /// An enumeration which is never disposed does not count.
-        /// </summary>
-        protected int disposalCount;
-
-        #endregion Protected Fields
-
-        #region Protected Methods
-
-        protected IEnumerable<T> GetWithDisposal<T>(params T[] datas)
+        try
         {
-            ArgumentNullException.ThrowIfNull(datas);
-
-            try
+            foreach (var data in datas)
             {
-                foreach (var data in datas)
-                {
-                    yield return data;
-                }
-            }
-            finally
-            {
-                disposalCount++;
+                yield return data;
             }
         }
-
-        #endregion Protected Methods
+        finally
+        {
+            disposalCount++;
+        }
     }
+
+    #endregion Protected Methods
 }

@@ -1,13 +1,12 @@
-﻿namespace EnumerableExtensionsTests.Commons
+﻿namespace EnumerableExtensionsTests.Commons;
+
+public class Item
 {
-    public class Item
-    {
-        #region Public Properties
+    #region Public Properties
 
-        public string Note { get; set; }
+    public string Note { get; set; }
 
-        public int SegmentId { get; set; }
+    public int SegmentId { get; set; }
 
-        #endregion Public Properties
-    }
+    #endregion Public Properties
 }
