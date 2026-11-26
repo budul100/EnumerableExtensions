@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,51 +10,44 @@ namespace EnumerableExtensions
 
         public static T[] AsArray<T>(this T value)
         {
-            var result = new T[] { value };
-
-            return result;
-        }
-
-        public static IEnumerable<T> AsEnumerable<T>(this T value)
-        {
-            var result = new T[] { value };
-
-            return result;
+            return [value];
         }
 
         public static List<T> AsList<T>(this T value)
         {
-            var result = new List<T> { value };
+            return [value];
+        }
 
-            return result;
+        /// <summary>
+        /// Wraps a single value into an enumerable.
+        /// Renamed from AsEnumerable, which hijacked System.Linq.Enumerable.AsEnumerable
+        /// for arrays and lists (identity conversion beats reference conversion).
+        /// </summary>
+        public static IEnumerable<T> AsSingleEnumerable<T>(this T value)
+        {
+            return [value];
         }
 
         public static T[] ToArrayOrDefault<T>(this IEnumerable<T> items)
         {
             var result = items?.ToArray();
 
-            if (!result.AnyItem())
-            {
-                result = default;
-            }
-
-            return result;
+            return result is { Length: > 0 }
+                ? result
+                : default;
         }
 
+        /// <summary>
+        /// Keys must not be null, the underlying dictionary rejects them.
+        /// </summary>
         public static IDictionary<TKey, IEnumerable<T>> ToGroupedDictionary<T, TKey>(this IEnumerable<T> items,
             Func<T, TKey> keyGetter)
         {
-            if (keyGetter == default)
-            {
-                throw new ArgumentNullException(nameof(keyGetter));
-            }
+            ArgumentNullException.ThrowIfNull(keyGetter);
 
             var result = new Dictionary<TKey, IEnumerable<T>>();
 
-            var keyGroups = items?
-                .GroupBy(s => keyGetter.Invoke(s)).ToArray();
-
-            foreach (var keyGroup in keyGroups.IfAny())
+            foreach (var keyGroup in items.IfAny().GroupBy(keyGetter))
             {
                 result.Add(
                     key: keyGroup.Key,
@@ -68,12 +61,9 @@ namespace EnumerableExtensions
         {
             var result = items?.ToList();
 
-            if (!result.AnyItem())
-            {
-                result = default;
-            }
-
-            return result;
+            return result is { Count: > 0 }
+                ? result
+                : default;
         }
 
         #endregion Public Methods

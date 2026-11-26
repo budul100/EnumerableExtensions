@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EnumerableExtensions
 {
@@ -9,181 +10,200 @@ namespace EnumerableExtensions
 
         public static IEnumerable<T> DistinctSuccessive<T>(this IEnumerable<T> items, IEqualityComparer<T> comparer = default)
         {
-            if (items != default)
+            if (items is null)
             {
-                var first = true;
-                var prior = default(T);
-
-                foreach (var item in items)
-                {
-                    var isDifferent = first || !comparer.Equals(
-                        left: item,
-                        right: prior);
-
-                    if (isDifferent)
-                        yield return item;
-
-                    first = false;
-                    prior = item;
-                }
+                return Enumerable.Empty<T>();
             }
+
+            return GetDistinctSuccessive(
+                items: items,
+                comparer: comparer ?? EqualityComparer<T>.Default);
         }
 
+        /// <summary>
+        /// Emits n + 1 pairs: (default, first), (first, second) ... (last, default).
+        /// Returns nothing for an empty sequence.
+        /// </summary>
         public static IEnumerable<TNew> ToConsecutivePairs<T, TNew>(this IEnumerable<T> items, Func<T, T, TNew> getter)
         {
-            if (getter == default)
-            {
-                throw new ArgumentNullException(nameof(getter));
-            }
+            ArgumentNullException.ThrowIfNull(getter);
 
-            if (items != default)
-            {
-                var previous = default(T);
-
-                using (var enumerator = items.GetEnumerator())
-                {
-                    while (enumerator.MoveNext())
-                    {
-                        yield return getter.Invoke(
-                            arg1: previous,
-                            arg2: enumerator.Current);
-
-                        previous = enumerator.Current;
-                    }
-
-                    yield return getter.Invoke(
-                        arg1: previous,
-                        arg2: default);
-                }
-            }
+            return items is null
+                ? Enumerable.Empty<TNew>()
+                : GetConsecutivePairs(
+                    items: items,
+                    getter: getter);
         }
 
+        /// <summary>
+        /// Emits n + 2 triples, padded with default at the start and at the end.
+        /// Returns nothing for an empty sequence.
+        /// </summary>
         public static IEnumerable<TNew> ToConsecutiveTriples<T, TNew>(this IEnumerable<T> items, Func<T, T, T, TNew> getter)
         {
-            if (getter == default)
-            {
-                throw new ArgumentNullException(nameof(getter));
-            }
+            ArgumentNullException.ThrowIfNull(getter);
 
-            if (items != default)
-            {
-                var previous1 = default(T);
-                var previous2 = default(T);
-
-                using (var enumerator = items.GetEnumerator())
-                {
-                    while (enumerator.MoveNext())
-                    {
-                        yield return getter(
-                            arg1: previous2,
-                            arg2: previous1,
-                            arg3: enumerator.Current);
-
-                        previous2 = previous1;
-                        previous1 = enumerator.Current;
-                    }
-
-                    yield return getter(
-                        arg1: previous2,
-                        arg2: previous1,
-                        arg3: default);
-
-                    yield return getter(
-                        arg1: previous1,
-                        arg2: default,
-                        arg3: default);
-                }
-            }
+            return items is null
+                ? Enumerable.Empty<TNew>()
+                : GetConsecutiveTriples(
+                    items: items,
+                    getter: getter);
         }
 
         public static IEnumerable<TNew> ToPairs<T, TNew>(this IEnumerable<T> items, Func<T, T, TNew> getter)
         {
-            if (getter == default)
-            {
-                throw new ArgumentNullException(nameof(getter));
-            }
+            ArgumentNullException.ThrowIfNull(getter);
 
-            if (items != default)
-            {
-                using (var enumerator = items.GetEnumerator())
-                {
-                    if (!enumerator.MoveNext())
-                    {
-                        yield break;
-                    }
-
-                    var previous = enumerator.Current;
-
-                    while (enumerator.MoveNext())
-                    {
-                        yield return getter(
-                            arg1: previous,
-                            arg2: enumerator.Current);
-
-                        previous = enumerator.Current;
-                    }
-                }
-            }
+            return items is null
+                ? Enumerable.Empty<TNew>()
+                : GetPairs(
+                    items: items,
+                    getter: getter);
         }
 
         public static IEnumerable<TNew> ToTriples<T, TNew>(this IEnumerable<T> items, Func<T, T, T, TNew> getter)
         {
-            if (getter == default)
-            {
-                throw new ArgumentNullException(nameof(getter));
-            }
+            ArgumentNullException.ThrowIfNull(getter);
 
-            if (items != default)
-            {
-                using (var enumerator = items.GetEnumerator())
-                {
-                    if (!enumerator.MoveNext())
-                    {
-                        yield break;
-                    }
-
-                    var previous1 = enumerator.Current;
-
-                    if (!enumerator.MoveNext())
-                    {
-                        yield break;
-                    }
-
-                    var previous2 = previous1;
-                    previous1 = enumerator.Current;
-
-                    while (enumerator.MoveNext())
-                    {
-                        yield return getter(
-                            arg1: previous2,
-                            arg2: previous1,
-                            arg3: enumerator.Current);
-
-                        previous2 = previous1;
-                        previous1 = enumerator.Current;
-                    }
-                }
-            }
+            return items is null
+                ? Enumerable.Empty<TNew>()
+                : GetTriples(
+                    items: items,
+                    getter: getter);
         }
 
         #endregion Public Methods
 
         #region Private Methods
 
-        private static bool Equals<T>(this IEqualityComparer<T> comparer, T left, T right)
+        private static bool AreEqual<T>(IEqualityComparer<T> comparer, T left, T right)
         {
-            if ((left?.Equals(default) ?? true) || (right?.Equals(default) ?? true))
+            var leftIsNull = left is null;
+            var rightIsNull = right is null;
+
+            // Custom comparers are never confronted with null values.
+            return leftIsNull || rightIsNull
+                ? leftIsNull && rightIsNull
+                : comparer.Equals(
+                    x: left,
+                    y: right);
+        }
+
+        private static IEnumerable<TNew> GetConsecutivePairs<T, TNew>(IEnumerable<T> items, Func<T, T, TNew> getter)
+        {
+            var previous = default(T);
+            var any = false;
+
+            foreach (var item in items)
             {
-                return (left?.Equals(default) ?? true)
-                    && (right?.Equals(default) ?? true);
+                any = true;
+
+                yield return getter(
+                    arg1: previous,
+                    arg2: item);
+
+                previous = item;
             }
-            else
+
+            if (any)
             {
-                return comparer == default
-                    ? left.Equals(right)
-                    : comparer.Equals(
-                        x: left,
-                        y: right);
+                yield return getter(
+                    arg1: previous,
+                    arg2: default);
+            }
+        }
+
+        private static IEnumerable<TNew> GetConsecutiveTriples<T, TNew>(IEnumerable<T> items, Func<T, T, T, TNew> getter)
+        {
+            var previous1 = default(T);
+            var previous2 = default(T);
+            var any = false;
+
+            foreach (var item in items)
+            {
+                any = true;
+
+                yield return getter(
+                    arg1: previous2,
+                    arg2: previous1,
+                    arg3: item);
+
+                previous2 = previous1;
+                previous1 = item;
+            }
+
+            if (any)
+            {
+                yield return getter(
+                    arg1: previous2,
+                    arg2: previous1,
+                    arg3: default);
+
+                yield return getter(
+                    arg1: previous1,
+                    arg2: default,
+                    arg3: default);
+            }
+        }
+
+        private static IEnumerable<T> GetDistinctSuccessive<T>(IEnumerable<T> items, IEqualityComparer<T> comparer)
+        {
+            var first = true;
+            var prior = default(T);
+
+            foreach (var item in items)
+            {
+                if (first || !AreEqual(comparer, item, prior))
+                {
+                    yield return item;
+                }
+
+                first = false;
+                prior = item;
+            }
+        }
+
+        private static IEnumerable<TNew> GetPairs<T, TNew>(IEnumerable<T> items, Func<T, T, TNew> getter)
+        {
+            var previous = default(T);
+            var first = true;
+
+            foreach (var item in items)
+            {
+                if (!first)
+                {
+                    yield return getter(
+                        arg1: previous,
+                        arg2: item);
+                }
+
+                previous = item;
+                first = false;
+            }
+        }
+
+        private static IEnumerable<TNew> GetTriples<T, TNew>(IEnumerable<T> items, Func<T, T, T, TNew> getter)
+        {
+            var previous1 = default(T);
+            var previous2 = default(T);
+            var buffered = 0;
+
+            foreach (var item in items)
+            {
+                if (buffered >= 2)
+                {
+                    yield return getter(
+                        arg1: previous2,
+                        arg2: previous1,
+                        arg3: item);
+                }
+                else
+                {
+                    buffered++;
+                }
+
+                previous2 = previous1;
+                previous1 = item;
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System;
+using System.Linq;
 using EnumerableExtensions;
 using EnumerableExtensionsTests.Commons;
 using Xunit;
@@ -34,6 +35,14 @@ namespace EnumerableExtensionsTests
         }
 
         [Fact]
+        public void DistinctSuccessiveValueTypes()
+        {
+            var result = GetWithDisposal(1, 1, 2, 2, 1).DistinctSuccessive().ToArray();
+
+            Assert.Equal(new[] { 1, 2, 1 }, result);
+        }
+
+        [Fact]
         public void ToConsecutivePairs()
         {
             disposalCount = 0;
@@ -47,6 +56,15 @@ namespace EnumerableExtensionsTests
         }
 
         [Fact]
+        public void ToConsecutivePairsEmpty()
+        {
+            var result = Array.Empty<string>()
+                .ToConsecutivePairs((x, y) => new { x, y }).ToArray();
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
         public void ToConsecutiveTriples()
         {
             disposalCount = 0;
@@ -57,6 +75,15 @@ namespace EnumerableExtensionsTests
             Assert.Equal(6, result.Length);
 
             Assert.Equal(1, disposalCount);
+        }
+
+        [Fact]
+        public void ToConsecutiveTriplesEmpty()
+        {
+            var result = Array.Empty<string>()
+                .ToConsecutiveTriples((x, y, z) => new { x, y, z }).ToArray();
+
+            Assert.Empty(result);
         }
 
         [Fact]
@@ -83,6 +110,14 @@ namespace EnumerableExtensionsTests
             Assert.Equal(2, result.Length);
 
             Assert.Equal(1, disposalCount);
+        }
+
+        [Fact]
+        public void ToPairsValidatesEagerly()
+        {
+            // No enumeration, the exception must be thrown by the call itself
+            Assert.Throws<ArgumentNullException>(
+                () => GetWithDisposal("a", "b").ToPairs<string, string>(null));
         }
 
         [Fact]

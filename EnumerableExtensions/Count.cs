@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,64 +9,38 @@ namespace EnumerableExtensions
 
         public static int CountOrDefault<T>(this IEnumerable<T> items)
         {
-            var result = 0;
-
-            if (items.AnyItem())
-            {
-                result = items.Count();
-            }
-
-            return result;
+            return items?.Count() ?? 0;
         }
 
         public static T MaxOrDefault<T>(this IEnumerable<T> items)
         {
-            var result = default(T);
-
-            if (items.AnyItem())
-            {
-                result = items.Max();
-            }
-
-            return result;
+            // DefaultIfEmpty keeps this at a single enumeration.
+            return items is null
+                ? default
+                : items.DefaultIfEmpty().Max();
         }
 
-        public static Nullable<T> MaxOrNull<T>(this IEnumerable<T> items)
+        public static T? MaxOrNull<T>(this IEnumerable<T> items)
             where T : struct
         {
-            var result = default(Nullable<T>);
-
-            if (items.AnyItem())
-            {
-                result = items.Max();
-            }
-
-            return result;
+            return items?
+                .Select(static i => (T?)i)
+                .Max();
         }
 
         public static T MinOrDefault<T>(this IEnumerable<T> items)
         {
-            var result = default(T);
-
-            if (items.AnyItem())
-            {
-                result = items.Min();
-            }
-
-            return result;
+            return items is null
+                ? default
+                : items.DefaultIfEmpty().Min();
         }
 
-        public static Nullable<T> MinOrNull<T>(this IEnumerable<T> items)
+        public static T? MinOrNull<T>(this IEnumerable<T> items)
             where T : struct
         {
-            var result = default(Nullable<T>);
-
-            if (items.AnyItem())
-            {
-                result = items.Min();
-            }
-
-            return result;
+            return items?
+                .Select(static i => (T?)i)
+                .Min();
         }
 
         #endregion Public Methods

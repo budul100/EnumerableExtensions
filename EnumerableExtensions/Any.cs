@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EnumerableExtensions
@@ -9,62 +9,40 @@ namespace EnumerableExtensions
 
         public static bool AnyItem<T>(this IEnumerable<T> items)
         {
-            var result = false;
-
-            if (items != default)
-            {
-                result = items.Any();
-            }
-
-            return result;
+            return items?.Any() == true;
         }
 
         public static bool AnyItemNonDefault<T>(this IEnumerable<T> items)
         {
-            var result = false;
-
-            if (items != default)
-            {
-                result = items.Any(i => !i.IsDefault());
-            }
-
-            return result;
+            return items?.Any(i => !i.IsDefault()) == true;
         }
 
         public static IEnumerable<T> IfAny<T>(this IEnumerable<T> items)
         {
-            if (items != default)
-            {
-                foreach (var item in items)
-                {
-                    yield return item;
-                }
-            }
+            // Returning the source itself keeps the ICollection fast paths (Count, ToArray) intact.
+            return items ?? Enumerable.Empty<T>();
         }
 
         public static IEnumerable<T> IfAnyNonDefault<T>(this IEnumerable<T> items)
         {
-            if (items?.AnyItemNonDefault() == true)
+            if (items is null)
             {
-                foreach (var item in items)
-                {
-                    yield return item;
-                }
+                return Enumerable.Empty<T>();
             }
+
+            // Buffered on purpose: the source is enumerated exactly once.
+            var buffer = items.ToArray();
+
+            return buffer.AnyItemNonDefault()
+                ? buffer
+                : Enumerable.Empty<T>();
         }
 
         public static IEnumerable<T> NonDefaults<T>(this IEnumerable<T> items)
         {
-            var relevants = items?
-                .Where(i => !i.IsDefault());
-
-            if (relevants != default)
-            {
-                foreach (var relevant in relevants)
-                {
-                    yield return relevant;
-                }
-            }
+            return items is null
+                ? Enumerable.Empty<T>()
+                : items.Where(static i => !i.IsDefault());
         }
 
         #endregion Public Methods

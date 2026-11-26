@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using EnumerableExtensions;
 using EnumerableExtensionsTests.Commons;
 using Xunit;
@@ -11,6 +11,16 @@ namespace EnumerableExtensionsTests
         #region Public Methods
 
         [Fact]
+        public void CountOrDefaultEnumeratesOnce()
+        {
+            disposalCount = 0;
+
+            Assert.Equal(3, GetWithDisposal(1, 2, 3).CountOrDefault());
+
+            Assert.Equal(1, disposalCount);
+        }
+
+        [Fact]
         public void MaxOrDefault()
         {
             var valuesDefaultInt = Array.Empty<int>();
@@ -19,6 +29,16 @@ namespace EnumerableExtensionsTests
             Assert.True(valuesDefaultInt.MaxOrDefault() == default);
             Assert.True(valuesDefaultDateTime.MaxOrDefault() == default);
             Assert.Equal(3, GetWithDisposal(3, 1, 2).MaxOrDefault());
+        }
+
+        [Fact]
+        public void MaxOrDefaultEnumeratesOnce()
+        {
+            disposalCount = 0;
+
+            Assert.Equal(3, GetWithDisposal(3, 1, 2).MaxOrDefault());
+
+            Assert.Equal(1, disposalCount);
         }
 
         [Fact]

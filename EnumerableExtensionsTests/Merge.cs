@@ -1,4 +1,4 @@
-﻿using EnumerableExtensions;
+using EnumerableExtensions;
 using EnumerableExtensionsTests.Commons;
 using Xunit;
 
@@ -70,6 +70,28 @@ namespace EnumerableExtensionsTests
         }
 
         [Fact]
+        public void MergeNumbersAreSortedNumerically()
+        {
+            Assert.Equal("2,10", new[] { 10, 2 }.Merge());
+        }
+
+        [Fact]
+        public void MergePropertySkipsNullItems()
+        {
+            disposalCount = 0;
+
+            var result = GetWithDisposal(
+                new TestObject(2),
+                default,
+                new TestObject(1))
+                .Merge(v => v.Value1);
+
+            Assert.Equal("1,2", result);
+
+            Assert.Equal(1, disposalCount);
+        }
+
+        [Fact]
         public void MergeSorted()
         {
             disposalCount = 0;
@@ -112,6 +134,12 @@ namespace EnumerableExtensionsTests
             Assert.Equal("c,b,a", result);
 
             Assert.Equal(1, disposalCount);
+        }
+
+        [Fact]
+        public void MergeValueTypesKeepDefaultValues()
+        {
+            Assert.Equal("0,1,2", new[] { 2, 0, 1 }.Merge());
         }
 
         #endregion Public Methods

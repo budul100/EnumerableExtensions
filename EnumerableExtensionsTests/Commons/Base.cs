@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace EnumerableExtensionsTests.Commons
@@ -7,6 +7,10 @@ namespace EnumerableExtensionsTests.Commons
     {
         #region Protected Fields
 
+        /// <summary>
+        /// Number of enumerations of GetWithDisposal which were disposed (completed or abandoned).
+        /// An enumeration which is never disposed does not count.
+        /// </summary>
         protected int disposalCount;
 
         #endregion Protected Fields
@@ -15,54 +19,21 @@ namespace EnumerableExtensionsTests.Commons
 
         protected IEnumerable<T> GetWithDisposal<T>(params T[] datas)
         {
-            disposalCount++;
-
             ArgumentNullException.ThrowIfNull(datas);
 
-            using var disposalClass = new Disposable();
-
-            foreach (var data in datas)
+            try
             {
-                yield return data;
+                foreach (var data in datas)
+                {
+                    yield return data;
+                }
             }
-
-            disposalClass.CanBeDisposed();
+            finally
+            {
+                disposalCount++;
+            }
         }
 
         #endregion Protected Methods
-
-        #region Protected Classes
-
-        protected class TestObject
-        {
-            #region Public Constructors
-
-            public TestObject()
-            { }
-
-            public TestObject(int value1)
-            {
-                Value1 = value1;
-            }
-
-            #endregion Public Constructors
-
-            #region Public Properties
-
-            public int Value1 { get; set; }
-
-            #endregion Public Properties
-        }
-
-        protected class TestParent(IEnumerable<Base.TestObject> testObjects)
-        {
-            #region Public Properties
-
-            public IEnumerable<TestObject> TestObjects { get; set; } = testObjects;
-
-            #endregion Public Properties
-        }
-
-        #endregion Protected Classes
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EnumerableExtensions
@@ -7,31 +9,32 @@ namespace EnumerableExtensions
     {
         #region Public Methods
 
-        public static int Count(this System.Collections.IEnumerable items)
+        public static int Count(this IEnumerable items)
         {
-            var result = 0;
-
-            if (items != default)
+            if (items is null)
             {
-                var enumerator = items.GetEnumerator();
-                result = enumerator.Count();
+                return 0;
             }
 
-            return result;
+            if (items is ICollection collection)
+            {
+                return collection.Count;
+            }
+
+            return Count(items.GetEnumerator());
         }
 
-        public static bool CountEqualsOrSingle(this System.Collections.IEnumerable items,
-            params System.Collections.IEnumerable[] others)
+        /// <summary>
+        /// True if all sequences with more than one element have the same length.
+        /// Null, empty and single-element sequences are ignored.
+        /// </summary>
+        public static bool CountEqualsOrSingle(this IEnumerable items,
+            params IEnumerable[] others)
         {
-            var enumerators = items
-                .GetEnumerators(others).ToArray();
-
             var all = 0;
 
-            foreach (var enumerator in enumerators)
+            foreach (var current in GetCounts(items, others))
             {
-                var current = enumerator.Count();
-
                 if (current > 1)
                 {
                     if (all == 0)
@@ -50,24 +53,35 @@ namespace EnumerableExtensions
 
         public static T ElementAtOrSingle<T>(this IEnumerable<T> items, int index)
         {
-            var result = default(T);
-
-            if (items?.Any() ?? false)
+            if (items is null)
             {
-                result = items.Count() == 1
-                    ? items.Single()
-                    : items.ElementAt(index);
+                return default;
             }
 
-            return result;
+            // At most one materialization, none for lists and arrays.
+            var list = items as IList<T> ?? items.ToArray();
+
+            if (list.Count == 0)
+            {
+                return default;
+            }
+
+            return list.Count == 1
+                ? list[0]
+                : list[index];
         }
 
-        public static IEnumerable<int> Indexes(this System.Collections.IEnumerable items, params System.Collections.IEnumerable[] others)
+        public static IEnumerable<int> Indexes(this IEnumerable items, params IEnumerable[] others)
         {
-            var enumerators = items
-                .GetEnumerators(others).ToArray();
+            var length = 0;
 
-            var length = enumerators.CountMax();
+            foreach (var current in GetCounts(items, others))
+            {
+                if (current > length)
+                {
+                    length = current;
+                }
+            }
 
             for (var index = 0; index < length; index++)
             {
@@ -79,11 +93,12 @@ namespace EnumerableExtensions
 
         #region Private Methods
 
-        private static int Count(this System.Collections.IEnumerator enumerator)
+        private static int Count(IEnumerator enumerator)
         {
             var result = 0;
 
-            if (enumerator != default)
+            // Enumerators of iterators are disposable, but the non-generic interface does not say so.
+            using (enumerator as IDisposable)
             {
                 while (enumerator.MoveNext())
                 {
@@ -94,36 +109,18 @@ namespace EnumerableExtensions
             return result;
         }
 
-        private static int CountMax(this IEnumerable<System.Collections.IEnumerator> enumerators)
+        private static IEnumerable<int> GetCounts(IEnumerable items, IEnumerable[] others)
         {
-            var result = 0;
-
-            foreach (var enumerator in enumerators)
+            if (items is not null)
             {
-                int current = Count(enumerator);
-
-                if (current > result)
-                {
-                    result = current;
-                }
-            }
-
-            return result;
-        }
-
-        private static IEnumerable<System.Collections.IEnumerator> GetEnumerators(this System.Collections.IEnumerable items,
-            IEnumerable<System.Collections.IEnumerable> others)
-        {
-            if (items != default)
-            {
-                yield return items.GetEnumerator();
+                yield return Count(items);
             }
 
             foreach (var other in others.IfAny())
             {
-                if (other != default)
+                if (other is not null)
                 {
-                    yield return other.GetEnumerator();
+                    yield return Count(other);
                 }
             }
         }
